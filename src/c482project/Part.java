@@ -1,13 +1,12 @@
 package c482project;
 
 public class Part {
-    private int partId;
     private String name;
     private double price;
-    private int inStock, min, max;
+    private int partID, inStock, min, max;
 
-    public Part(int partId, String name, double price, int inStock, int min, int max) {
-        this.partId = partId;
+    public Part(int partID, String name, double price, int inStock, int min, int max) {
+        this.partID = partID;
         this.name = name;
         this.price = price;
         this.inStock = inStock;
@@ -16,16 +15,25 @@ public class Part {
     }
 
     // this might need to be deleted
-    public Part(int partId) {
-        this.partId = partId;
+    public Part(int partID) {
+        this.partID = partID;
+        // Return part based off ID?
+    }
+
+    public Part(int partID, String name) {
+        this.partID = partID;
+        this.name = name;
+    }
+
+    public Part() {
     }
 
     public int getPartId() {
-        return partId;
+        return partID;
     }
 
-    public void setPartId(int partId) {
-        this.partId = partId;
+    public void setPartId(int partID) {
+        this.partID = partID;
     }
 
     public String getName() {

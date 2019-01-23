@@ -11,6 +11,16 @@ public class Inventory {
         this.allParts = allParts;
     }
     
+    Inventory() {
+        this.products = new ArrayList<Product>();
+        this.allParts = new ArrayList<Part>();
+    }
+    
+    // Temp
+    public ArrayList<Part> getAllParts() {
+        return allParts;
+    }
+    
     public void addProduct(Product product) {
         
     }
@@ -28,7 +38,7 @@ public class Inventory {
     }
     
     public void addPart(Part part) {
-        
+        allParts.add(part);
     }
     
     public void deletePart(Part part) {

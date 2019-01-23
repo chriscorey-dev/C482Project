@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 public class C482Project extends Application {
     
     private static Stage primaryStage;
+        
+    private static Inventory inv = new Inventory();
     
     public static void main(String[] args) {
         launch(args);
@@ -34,6 +36,10 @@ public class C482Project extends Application {
     static Scene mainScreenScene() {
         primaryStage.setTitle("C482 - Main Menu");
         
+        for (int i = 0; i < inv.getAllParts().size(); i++) {
+            System.out.println(inv.getAllParts().get(i).getName());
+        }
+        
         // Setting up layout
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10,10,10,10));
@@ -45,7 +51,7 @@ public class C482Project extends Application {
         // Objects
         Button addPartButton = new Button("Add Part");
         GridPane.setConstraints(addPartButton, 0, 0);
-        addPartButton.setOnAction(e -> primaryStage.setScene(addPartScene()));
+        addPartButton.setOnAction(e -> primaryStage.setScene(addPartScene(0)));
         
         Button modPartButton = new Button("Modify Part");
         GridPane.setConstraints(modPartButton, 1, 0);
@@ -59,17 +65,26 @@ public class C482Project extends Application {
         GridPane.setConstraints(modProdButton, 1, 1);
 //        modProdButton.setOnAction(e -> primaryStage.setScene(modProdScene()));
         
+        Button exitButton = new Button("Exit");
+        GridPane.setConstraints(exitButton, 0, 2);
+        exitButton.setOnAction(e -> primaryStage.close());
+        
         
 
         // Adding objects to layout, and layout to scene
-        grid.getChildren().addAll(addPartButton, modPartButton, addProdButton, modProdButton);
+        grid.getChildren().addAll(addPartButton, modPartButton, addProdButton, modProdButton, exitButton);
         Scene scene = new Scene(grid, 300, 250);
         
         return scene;
     }
     
-    static Scene addPartScene() {
+    static Scene addPartScene(int partID) {
         primaryStage.setTitle("C482 - Add Part");
+        
+//        Inventory inv = new Inventory();
+        
+        // Checks if adding or modifying
+        boolean newPart = (partID == 0) ? true : false;
         
         // Setting up layout
         GridPane grid = new GridPane();
@@ -139,15 +154,35 @@ public class C482Project extends Application {
         GridPane.setConstraints(distributorText, 1, 6);
         distributorText.setPromptText("Company Name");
         
+        // TODO: Create part obj with field data to pass into new or modified item
+        Part part = new Part(partID, "part " + partID, 1.1, 5, 1, 10);
+//        Part part = new Part(partID, "part 01");
+        
         Button saveButton = new Button("Save");
         GridPane.setConstraints(saveButton, 0, 7);
-        saveButton.setOnAction(e -> System.out.println(idText.getText() + " | " + nameText.getText() + " | " + invText.getText() + " | " + priceText.getText() + " | " + maxText.getText() + " | " + minText.getText() + " | " + distributorText.getText() + " | " + deliveryMethodToggle.getSelectedToggle()));
+        saveButton.setOnAction(e -> {
+//            System.out.println(idText.getText() + " | " + nameText.getText() + " | " + invText.getText() + " | " + priceText.getText() + " | " + maxText.getText() + " | " + minText.getText() + " | " + distributorText.getText() + " | " + deliveryMethodToggle.getSelectedToggle());
+            if (newPart) {
+                inv.addPart(part);
+            } else {
+//                inv.updatePart(partID);
+            }
+        });
         
         Button cancelButton = new Button("Cancel");
         GridPane.setConstraints(cancelButton, 1, 7);
         cancelButton.setOnAction(e -> primaryStage.setScene(mainScreenScene()));
             
 
+        if (!newPart) {
+            inv.lookupPart(partID);
+            idText.setText(""+partID);
+            
+            idText.setText(""+partID);
+            idText.setText(""+partID);
+            idText.setText(""+partID);
+            idText.setText(""+partID);
+        }
 
         // Adding objects to layout, and layout to scene
         grid.getChildren().addAll(addPartLabel, idLabel, nameLabel, invLabel, priceLabel, maxLabel, minLabel, distributorLabel);

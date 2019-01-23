@@ -5,14 +5,13 @@ import java.util.ArrayList;
 public class Product {
     
     private ArrayList<Part> associatedParts;
-    private int productId;
     private String name;
     private double price;
-    private int inStock, min, max;
+    private int productID, inStock, min, max;
 
-    public Product(ArrayList<Part> associatedParts, int productId, String name, double price, int inStock, int min, int max) {
+    public Product(ArrayList<Part> associatedParts, int productID, String name, double price, int inStock, int min, int max) {
         this.associatedParts = associatedParts;
-        this.productId = productId;
+        this.productID = productID;
         this.name = name;
         this.price = price;
         this.inStock = inStock;
@@ -20,8 +19,8 @@ public class Product {
         this.max = max;
     }
 
-    public Product(int productId) {
-        this.productId = productId;
+    public Product(int productID) {
+        this.productID = productID;
     }
     
     public void addAssociatedPart(Part part) {
@@ -37,11 +36,11 @@ public class Product {
     }
 
     public int getProductId() {
-        return productId;
+        return productID;
     }
 
-    public void setProductId(int productId) {
-        this.productId = productId;
+    public void setProductId(int productID) {
+        this.productID = productID;
     }
 
     public String getName() {
