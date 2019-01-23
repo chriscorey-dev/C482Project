@@ -15,20 +15,23 @@ import javafx.stage.Stage;
 
 public class C482Project extends Application {
     
+    private static Stage primaryStage;
+    
     public static void main(String[] args) {
         launch(args);
     }
     
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
         primaryStage.setTitle("C482");
         
-        primaryStage.setScene(addPartScene());
+//        primaryStage.setScene(addPartScene());
+        primaryStage.setScene(mainScreenScene());
         primaryStage.show();
     }
     
     static Scene mainScreenScene() {
-        Stage primaryStage = new Stage();
         primaryStage.setTitle("C482 - Main Menu");
         
         // Setting up layout
@@ -40,38 +43,32 @@ public class C482Project extends Application {
 
 
         // Objects
-        Label loginLabel = new Label("Login");
-        GridPane.setConstraints(loginLabel, 0, 0);
-
-        Label usernameLabel = new Label("Username");
-        GridPane.setConstraints(usernameLabel, 0, 1);
+        Button addPartButton = new Button("Add Part");
+        GridPane.setConstraints(addPartButton, 0, 0);
+        addPartButton.setOnAction(e -> primaryStage.setScene(addPartScene()));
         
-        TextField usernameText = new TextField();
-        usernameText.setPromptText("username");
-        GridPane.setConstraints(usernameText, 1, 1);
+        Button modPartButton = new Button("Modify Part");
+        GridPane.setConstraints(modPartButton, 1, 0);
+//         modPartButton.setOnAction(e -> primaryStage.setScene(modPartScene()));
         
-        Label passwordLabel = new Label("Password");
-        GridPane.setConstraints(passwordLabel, 0, 2);
+        Button addProdButton = new Button("Add Product");
+        GridPane.setConstraints(addProdButton, 0, 1);
+//        addProdButton.setOnAction(e -> primaryStage.setScene(addProdScene()));
         
-        TextField passwordText = new TextField();
-        passwordText.setPromptText("Password");
-        GridPane.setConstraints(passwordText, 1, 2);
+        Button modProdButton = new Button("Modify Product");
+        GridPane.setConstraints(modProdButton, 1, 1);
+//        modProdButton.setOnAction(e -> primaryStage.setScene(modProdScene()));
         
-        Button loginButton = new Button("Login");
-        GridPane.setConstraints(loginButton, 1, 3);
-        loginButton.setOnAction(e -> System.out.println(usernameText.getText() + " " + passwordText.getText()));
-            
-
+        
 
         // Adding objects to layout, and layout to scene
-        grid.getChildren().addAll(usernameLabel, passwordLabel, usernameText, passwordText, loginButton, loginLabel);
+        grid.getChildren().addAll(addPartButton, modPartButton, addProdButton, modProdButton);
         Scene scene = new Scene(grid, 300, 250);
         
         return scene;
     }
     
     static Scene addPartScene() {
-        Stage primaryStage = new Stage();
         primaryStage.setTitle("C482 - Add Part");
         
         // Setting up layout
@@ -148,7 +145,7 @@ public class C482Project extends Application {
         
         Button cancelButton = new Button("Cancel");
         GridPane.setConstraints(cancelButton, 1, 7);
-//        cancelButton.setOnAction(e -> System.out.println(usernameText.getText() + " " + passwordText.getText()));
+        cancelButton.setOnAction(e -> primaryStage.setScene(mainScreenScene()));
             
 
 
