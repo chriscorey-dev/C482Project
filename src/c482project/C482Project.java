@@ -28,6 +28,9 @@ public class C482Project extends Application {
     }
     
     static Scene mainScreenScene() {
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("C482 - Main Menu");
+        
         // Setting up layout
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10,10,10,10));
@@ -68,6 +71,9 @@ public class C482Project extends Application {
     }
     
     static Scene addPartScene() {
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("C482 - Add Part");
+        
         // Setting up layout
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10,10,10,10));
@@ -95,10 +101,9 @@ public class C482Project extends Application {
         
         Label idLabel = new Label("ID");
         GridPane.setConstraints(idLabel, 0, 1);
-        TextField idText = new TextField();
+        TextField idText = new TextField("Auto Gen - Disabled");
         GridPane.setConstraints(idText, 1, 1);
         idText.setPromptText("Auto Gen - Disabled");
-        idText.setText("Auto Gen - Disabled");
         idText.setDisable(true);
         
         Label nameLabel = new Label("Name");
@@ -131,15 +136,15 @@ public class C482Project extends Application {
         GridPane.setConstraints(minText, 3, 5);
         minText.setPromptText("Min");
         
-        Label companyNameLabel = new Label("Company Name");
-        GridPane.setConstraints(companyNameLabel, 0, 6);
-        TextField companyNameText = new TextField();
-        GridPane.setConstraints(companyNameText, 1, 6);
-        companyNameText.setPromptText("Company Name");
+        Label distributorLabel = new Label("Company Name");
+        GridPane.setConstraints(distributorLabel, 0, 6);
+        TextField distributorText = new TextField();
+        GridPane.setConstraints(distributorText, 1, 6);
+        distributorText.setPromptText("Company Name");
         
         Button saveButton = new Button("Save");
         GridPane.setConstraints(saveButton, 0, 7);
-        saveButton.setOnAction(e -> System.out.println(idText.getText() + " | " + nameText.getText() + " | " + invText.getText() + " | " + priceText.getText() + " | " + maxText.getText() + " | " + minText.getText() + " | " + companyNameText.getText() + " | " + deliveryMethodToggle.getSelectedToggle()));
+        saveButton.setOnAction(e -> System.out.println(idText.getText() + " | " + nameText.getText() + " | " + invText.getText() + " | " + priceText.getText() + " | " + maxText.getText() + " | " + minText.getText() + " | " + distributorText.getText() + " | " + deliveryMethodToggle.getSelectedToggle()));
         
         Button cancelButton = new Button("Cancel");
         GridPane.setConstraints(cancelButton, 1, 7);
@@ -148,8 +153,8 @@ public class C482Project extends Application {
 
 
         // Adding objects to layout, and layout to scene
-        grid.getChildren().addAll(addPartLabel, idLabel, nameLabel, invLabel, priceLabel, maxLabel, minLabel, companyNameLabel);
-        grid.getChildren().addAll(idText, nameText, invText, priceText, maxText, minText, companyNameText);
+        grid.getChildren().addAll(addPartLabel, idLabel, nameLabel, invLabel, priceLabel, maxLabel, minLabel, distributorLabel);
+        grid.getChildren().addAll(idText, nameText, invText, priceText, maxText, minText, distributorText);
         grid.getChildren().addAll(saveButton, cancelButton);
         grid.getChildren().addAll(inHouseRadio, outsourcedRadio);
         
