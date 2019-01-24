@@ -28,6 +28,9 @@ public class C482Project extends Application {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("C482");
         
+        // TEST 01
+        inv.addPart(new Part(1, "Engine", 499.99, 1, 1, 5));
+        
 //        primaryStage.setScene(addPartScene());
         primaryStage.setScene(mainScreenScene());
         primaryStage.show();
@@ -36,9 +39,12 @@ public class C482Project extends Application {
     static Scene mainScreenScene() {
         primaryStage.setTitle("C482 - Main Menu");
         
+        // TEST: Display all parts
+        System.out.print("Parts: ");
         for (int i = 0; i < inv.getAllParts().size(); i++) {
-            System.out.println(inv.getAllParts().get(i).getName());
+            System.out.print(inv.getAllParts().get(i).getName() + ", ");
         }
+        System.out.println();
         
         // Setting up layout
         GridPane grid = new GridPane();
@@ -55,7 +61,7 @@ public class C482Project extends Application {
         
         Button modPartButton = new Button("Modify Part");
         GridPane.setConstraints(modPartButton, 1, 0);
-//         modPartButton.setOnAction(e -> primaryStage.setScene(modPartScene()));
+         modPartButton.setOnAction(e -> primaryStage.setScene(addPartScene(1)));
         
         Button addProdButton = new Button("Add Product");
         GridPane.setConstraints(addProdButton, 0, 1);
@@ -154,34 +160,34 @@ public class C482Project extends Application {
         GridPane.setConstraints(distributorText, 1, 6);
         distributorText.setPromptText("Company Name");
         
-        // TODO: Create part obj with field data to pass into new or modified item
-        Part part = new Part(partID, "part " + partID, 1.1, 5, 1, 10);
-//        Part part = new Part(partID, "part 01");
-        
         Button saveButton = new Button("Save");
         GridPane.setConstraints(saveButton, 0, 7);
         saveButton.setOnAction(e -> {
-//            System.out.println(idText.getText() + " | " + nameText.getText() + " | " + invText.getText() + " | " + priceText.getText() + " | " + maxText.getText() + " | " + minText.getText() + " | " + distributorText.getText() + " | " + deliveryMethodToggle.getSelectedToggle());
+        // TODO: Proper validation
+        Part part = new Part(nameText.getText(), Double.parseDouble(priceText.getText()), Integer.parseInt(invText.getText()), Integer.parseInt(minText.getText()), Integer.parseInt(maxText.getText()));
             if (newPart) {
                 inv.addPart(part);
             } else {
-//                inv.updatePart(partID);
+                inv.changePart(part);
             }
+            primaryStage.setScene(mainScreenScene());
         });
         
         Button cancelButton = new Button("Cancel");
         GridPane.setConstraints(cancelButton, 1, 7);
         cancelButton.setOnAction(e -> primaryStage.setScene(mainScreenScene()));
-            
+        
 
+        // If part already exists, populate fields
+        System.out.println("New part?: " + Boolean.toString(newPart));
         if (!newPart) {
-            inv.lookupPart(partID);
-            idText.setText(""+partID);
-            
-            idText.setText(""+partID);
-            idText.setText(""+partID);
-            idText.setText(""+partID);
-            idText.setText(""+partID);
+            Part modPart = inv.lookupPart(partID);
+            idText.setText(Integer.toString(modPart.getPartID()));
+            nameText.setText(modPart.getName());
+            invText.setText(Integer.toString(modPart.getInStock()));
+            priceText.setText(Double.toString(modPart.getPrice()));
+            maxText.setText(Integer.toString(modPart.getMax()));
+            minText.setText(Integer.toString(modPart.getMin()));
         }
 
         // Adding objects to layout, and layout to scene

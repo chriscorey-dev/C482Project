@@ -16,7 +16,7 @@ public class Inventory {
         this.allParts = new ArrayList<Part>();
     }
     
-    // Temp
+    // TEMP: 
     public ArrayList<Part> getAllParts() {
         return allParts;
     }
@@ -25,15 +25,16 @@ public class Inventory {
         
     }
     
-    public boolean removeProduct(int productId) {
+    public boolean removeProduct(int productID) {
         return false;
     }
     
-    public Product lookupProduct(int productId) {
-        return new Product(productId);
+    public Product lookupProduct(int productID) {
+        return new Product(productID);
     }
     
-    public void updateProduct(int productId) {
+    // Idk what this does...
+    public void updateProduct(int productID) {
         
     }
     
@@ -45,11 +46,39 @@ public class Inventory {
         
     }
     
-    public Part lookupPart(int partId) {
-       return new Part(partId);
+    public Part lookupPart(int partID) {
+        for (int i = 0; i < allParts.size(); i++) {
+            if (allParts.get(i).getPartID() == partID) {
+                return allParts.get(i);
+            }
+        }
+        return null;
     }
     
-    public void updatePart(int partId) {
+    // Idk what this does...
+    public void updatePart(int partID) {
         
+    }
+    
+    public void changePart(Part newPart) {
+        Part oldPart = lookupPart(newPart.getPartID());
+        if (oldPart == null) {return;}
+        
+        oldPart.setName(newPart.getName());
+        oldPart.setPrice(newPart.getPrice());
+        oldPart.setInStock(newPart.getInStock());
+        oldPart.setMin(newPart.getMin());
+        oldPart.setMax(newPart.getMax());
+    }
+    
+    public void changeProduct(Part newPart) {
+        Part oldPart = lookupPart(newPart.getPartID());
+        if (oldPart == null) {return;}
+        
+        oldPart.setName(newPart.getName());
+        oldPart.setPrice(newPart.getPrice());
+        oldPart.setInStock(newPart.getInStock());
+        oldPart.setMin(newPart.getMin());
+        oldPart.setMax(newPart.getMax());
     }
 }

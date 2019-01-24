@@ -14,6 +14,15 @@ public class Part {
         this.max = max;
     }
 
+    public Part(String name, double price, int inStock, int min, int max) {
+//        this.setName(name);
+        this.name = name;
+        this.price = price;
+        this.inStock = inStock;
+        this.min = min;
+        this.max = max;
+    }
+
     // this might need to be deleted
     public Part(int partID) {
         this.partID = partID;
@@ -25,14 +34,18 @@ public class Part {
         this.name = name;
     }
 
+    public Part(String name) {
+        this.name = name;
+    }
+
     public Part() {
     }
 
-    public int getPartId() {
+    public int getPartID() {
         return partID;
     }
 
-    public void setPartId(int partID) {
+    public void setPartID(int partID) {
         this.partID = partID;
     }
 
