@@ -39,6 +39,9 @@ public class Inventory {
     }
     
     public void addPart(Part part) {
+        part.setPartID(allParts.size() + 1);
+//        System.out.println(allParts.size() + 1);
+//        part.setPartID(allParts.get(allParts.size() - 1).getPartID());
         allParts.add(part);
     }
     

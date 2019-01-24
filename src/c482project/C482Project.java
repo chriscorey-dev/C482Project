@@ -87,8 +87,6 @@ public class C482Project extends Application {
     static Scene addPartScene(int partID) {
         primaryStage.setTitle("C482 - Add Part");
         
-//        Inventory inv = new Inventory();
-        
         // Checks if adding or modifying
         boolean newPart = (partID == 0) ? true : false;
         
@@ -164,7 +162,7 @@ public class C482Project extends Application {
         GridPane.setConstraints(saveButton, 0, 7);
         saveButton.setOnAction(e -> {
         // TODO: Proper validation
-        Part part = new Part(nameText.getText(), Double.parseDouble(priceText.getText()), Integer.parseInt(invText.getText()), Integer.parseInt(minText.getText()), Integer.parseInt(maxText.getText()));
+        Part part = new Part(partID, nameText.getText(), Double.parseDouble(priceText.getText()), Integer.parseInt(invText.getText()), Integer.parseInt(minText.getText()), Integer.parseInt(maxText.getText()));
             if (newPart) {
                 inv.addPart(part);
             } else {
@@ -179,7 +177,7 @@ public class C482Project extends Application {
         
 
         // If part already exists, populate fields
-        System.out.println("New part?: " + Boolean.toString(newPart));
+//        System.out.println("New part?: " + Boolean.toString(newPart));
         if (!newPart) {
             Part modPart = inv.lookupPart(partID);
             idText.setText(Integer.toString(modPart.getPartID()));
