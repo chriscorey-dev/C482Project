@@ -102,10 +102,13 @@ public class C482Project extends Application {
         Button deletePartButton = new Button("Delete");
         GridPane.setConstraints(deletePartButton, 0, 3);
         deletePartButton.setOnAction(e -> {
-            // TODO: Maybe make a class for confirimation
-            inv.deletePart(partsTable.getSelectionModel().getSelectedItem());
-            partsTable.setItems(getParts());
-            partsTable.getSelectionModel().selectFirst();
+            Part selectedPart = partsTable.getSelectionModel().getSelectedItem();
+            // TODO: Shoudn't be able to delete or modify if there are no parts
+            if (ConfirmationBox.display("Are you sure you want to delete this part: " + selectedPart.getName())) {
+                inv.deletePart(selectedPart);
+                partsTable.setItems(getParts());
+                partsTable.getSelectionModel().selectFirst();
+            }
         });
         
         Button addProdButton = new Button("Add Product");
@@ -139,7 +142,7 @@ public class C482Project extends Application {
     }
     
     
-    // TEMP: maybe
+    // TEMP: maybe. Refreshes list view
     static ObservableList<Part> getParts() {
         // ObservableList
         ObservableList<Part> parts = FXCollections.observableArrayList();
@@ -248,7 +251,6 @@ public class C482Project extends Application {
         
 
         // If part already exists, populate fields
-//        System.out.println("New part?: " + Boolean.toString(newPart));
         if (!newPart) {
             Part modPart = inv.lookupPart(partID);
             idText.setText(Integer.toString(modPart.getPartID()));
