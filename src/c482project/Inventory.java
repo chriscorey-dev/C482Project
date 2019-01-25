@@ -16,21 +16,43 @@ public class Inventory {
         this.allParts = new ArrayList<Part>();
     }
     
-    // TEMP: 
+    // TEMP: probably
     public ArrayList<Part> getAllParts() {
         return allParts;
     }
     
+    // TEMP: probably
+    public ArrayList<Product> getAllProducts() {
+        return products;
+    }
+    
     public void addProduct(Product product) {
-        
+        int newProdID = 1;
+        if (products.size() > 0) {
+            newProdID = products.get(products.size() - 1).getProductID() + 1;
+        }
+        product.setProductID(newProdID);
+        products.add(product);
     }
     
     public boolean removeProduct(int productID) {
-        return false;
+        // Validation
+//        return allParts.remove(part);
+        return products.remove(lookupProduct(productID));
+    }
+    
+    public boolean deleteProduct(Product product) {
+        // Validation
+        return products.remove(product);
     }
     
     public Product lookupProduct(int productID) {
-        return new Product(productID);
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).getProductID() == productID) {
+                return products.get(i);
+            }
+        }
+        return null;
     }
     
     // Idk what this does...
@@ -38,15 +60,15 @@ public class Inventory {
         
     }
     
-    public void modifyProduct(Part newPart) {
-        Part oldPart = lookupPart(newPart.getPartID());
-        if (oldPart == null) {return;}
+    public void modifyProduct(Product newProd) {
+        Product oldProd = lookupProduct(newProd.getProductID());
+        if (oldProd == null) {return;}
         
-        oldPart.setName(newPart.getName());
-        oldPart.setPrice(newPart.getPrice());
-        oldPart.setInStock(newPart.getInStock());
-        oldPart.setMin(newPart.getMin());
-        oldPart.setMax(newPart.getMax());
+        oldProd.setName(newProd.getName());
+        oldProd.setPrice(newProd.getPrice());
+        oldProd.setInStock(newProd.getInStock());
+        oldProd.setMin(newProd.getMin());
+        oldProd.setMax(newProd.getMax());
     }
     
     public void addPart(Part part) {
@@ -60,6 +82,7 @@ public class Inventory {
     }
     
     public boolean deletePart(Part part) {
+        // Validation
         return allParts.remove(part);
     }
     
