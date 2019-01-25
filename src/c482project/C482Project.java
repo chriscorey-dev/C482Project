@@ -47,13 +47,6 @@ public class C482Project extends Application {
     static Scene mainScreenScene() {
         primaryStage.setTitle("C482 - Main Menu");
         
-        // TEST: Display all parts
-        System.out.print("Parts: ");
-        for (int i = 0; i < inv.getAllParts().size(); i++) {
-            System.out.print(inv.getAllParts().get(i).getName() + ", ");
-        }
-        System.out.println();
-        
         // Setting up layout
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10,10,10,10));
@@ -71,6 +64,7 @@ public class C482Project extends Application {
         TableView<Part> partsTable= new TableView<Part>();
         GridPane.setConstraints(partsTable, 0, 0);
 //        partsTable.setMinWidth(200);
+        partsTable.setMaxHeight(150);
         
         TableColumn<Part, Integer> idColumn = new TableColumn<>("Part ID");
         idColumn.setMinWidth(50);
@@ -89,28 +83,29 @@ public class C482Project extends Application {
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         
         partsTable.setItems(getParts());
+        partsTable.getSelectionModel().selectFirst();
         partsTable.getColumns().addAll(idColumn, nameColumn, invColumn, priceColumn);
         
-        
 
-        // Objects
-        Button addPartButton = new Button("Add Part");
+        Button addPartButton = new Button("Add");
         GridPane.setConstraints(addPartButton, 0, 1);
         addPartButton.setOnAction(e -> primaryStage.setScene(addPartScene(0)));
         
-        Button modPartButton = new Button("Modify Part");
+        Button modPartButton = new Button("Modify");
         GridPane.setConstraints(modPartButton, 0, 2);
         modPartButton.setOnAction(e -> {
             primaryStage.setScene(addPartScene(partsTable.getSelectionModel().getSelectedItem().getPartID()));
             partsTable.setItems(getParts());
+            partsTable.getSelectionModel().selectFirst();
         });
         
-        Button deletePartButton = new Button("Delete Part");
+        Button deletePartButton = new Button("Delete");
         GridPane.setConstraints(deletePartButton, 0, 3);
         deletePartButton.setOnAction(e -> {
             // TODO: Maybe make a class for confirimation
             inv.deletePart(partsTable.getSelectionModel().getSelectedItem());
             partsTable.setItems(getParts());
+            partsTable.getSelectionModel().selectFirst();
         });
         
         Button addProdButton = new Button("Add Product");
@@ -136,15 +131,16 @@ public class C482Project extends Application {
         
 
         // Adding objects to layout, and layout to scene
-        grid.getChildren().addAll(addPartButton, modPartButton, deletePartButton, addProdButton, modProdButton, deleteProdButton, exitButton);
         grid.getChildren().addAll(partsTable);
+        grid.getChildren().addAll(addPartButton, modPartButton, deletePartButton, addProdButton, modProdButton, deleteProdButton, exitButton);
         Scene scene = new Scene(grid, 600, 500);
         
         return scene;
     }
     
     
-    static private ObservableList<Part> getParts() {
+    // TEMP: maybe
+    static ObservableList<Part> getParts() {
         // ObservableList
         ObservableList<Part> parts = FXCollections.observableArrayList();
         parts.removeAll();
