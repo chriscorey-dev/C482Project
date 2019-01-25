@@ -1,15 +1,22 @@
 package c482project;
 
+import java.util.ArrayList;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -30,6 +37,7 @@ public class C482Project extends Application {
         
         // TEST 01
         inv.addPart(new Part(1, "Engine", 499.99, 1, 1, 5));
+        inv.addPart(new Part(2, "Tire", 49.99, 4, 1, 8));
         
 //        primaryStage.setScene(addPartScene());
         primaryStage.setScene(mainScreenScene());
@@ -52,43 +60,107 @@ public class C482Project extends Application {
         grid.setVgap(8);
         grid.setHgap(10);
         
-
+        
+        
+        
+        
+        
+        
+        
+        // TableView
+        TableView<Part> partsTable= new TableView<Part>();
+        GridPane.setConstraints(partsTable, 0, 0);
+//        partsTable.setMinWidth(200);
+        
+        TableColumn<Part, Integer> idColumn = new TableColumn<>("Part ID");
+        idColumn.setMinWidth(50);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
+        
+        TableColumn<Part, Integer> nameColumn = new TableColumn<>("Part Name");
+        nameColumn.setMinWidth(50);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        
+        TableColumn<Part, Integer> invColumn = new TableColumn<>("Inventory Level");
+        invColumn.setMinWidth(50);
+        invColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
+        
+        TableColumn<Part, Integer> priceColumn = new TableColumn<>("Price/Cost per Unit");
+        priceColumn.setMinWidth(50);
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        
+        partsTable.setItems(getParts());
+        partsTable.getColumns().addAll(idColumn, nameColumn, invColumn, priceColumn);
+        
+        
 
         // Objects
         Button addPartButton = new Button("Add Part");
-        GridPane.setConstraints(addPartButton, 0, 0);
+        GridPane.setConstraints(addPartButton, 0, 1);
         addPartButton.setOnAction(e -> primaryStage.setScene(addPartScene(0)));
         
         Button modPartButton = new Button("Modify Part");
-        GridPane.setConstraints(modPartButton, 1, 0);
-         modPartButton.setOnAction(e -> primaryStage.setScene(addPartScene(1)));
+        GridPane.setConstraints(modPartButton, 0, 2);
+        modPartButton.setOnAction(e -> {
+            primaryStage.setScene(addPartScene(partsTable.getSelectionModel().getSelectedItem().getPartID()));
+            partsTable.setItems(getParts());
+        });
+        
+        Button deletePartButton = new Button("Delete Part");
+        GridPane.setConstraints(deletePartButton, 0, 3);
+        deletePartButton.setOnAction(e -> {
+            // TODO: Maybe make a class for confirimation
+            inv.deletePart(partsTable.getSelectionModel().getSelectedItem());
+            partsTable.setItems(getParts());
+        });
         
         Button addProdButton = new Button("Add Product");
-        GridPane.setConstraints(addProdButton, 0, 1);
+        GridPane.setConstraints(addProdButton, 1, 1);
 //        addProdButton.setOnAction(e -> primaryStage.setScene(addProdScene()));
         
         Button modProdButton = new Button("Modify Product");
-        GridPane.setConstraints(modProdButton, 1, 1);
+        GridPane.setConstraints(modProdButton, 1, 2);
 //        modProdButton.setOnAction(e -> primaryStage.setScene(modProdScene()));
         
+        Button deleteProdButton = new Button("Delete Product");
+        GridPane.setConstraints(deleteProdButton, 1, 3);
+//        deleteProdButton.setOnAction(e -> inv.removeProduct(1));
+        
         Button exitButton = new Button("Exit");
-        GridPane.setConstraints(exitButton, 0, 2);
+        GridPane.setConstraints(exitButton, 0, 4);
         exitButton.setOnAction(e -> primaryStage.close());
+        
+        
+        
+        
         
         
 
         // Adding objects to layout, and layout to scene
-        grid.getChildren().addAll(addPartButton, modPartButton, addProdButton, modProdButton, exitButton);
-        Scene scene = new Scene(grid, 300, 250);
+        grid.getChildren().addAll(addPartButton, modPartButton, deletePartButton, addProdButton, modProdButton, deleteProdButton, exitButton);
+        grid.getChildren().addAll(partsTable);
+        Scene scene = new Scene(grid, 600, 500);
         
         return scene;
     }
     
+    
+    static private ObservableList<Part> getParts() {
+        // ObservableList
+        ObservableList<Part> parts = FXCollections.observableArrayList();
+        parts.removeAll();
+        parts.addAll(inv.getAllParts());
+        return parts;
+    }
+    
     static Scene addPartScene(int partID) {
-        primaryStage.setTitle("C482 - Add Part");
         
         // Checks if adding or modifying
         boolean newPart = (partID == 0) ? true : false;
+        if (newPart) {
+            primaryStage.setTitle("C482 - Add Part");
+        } else {
+            primaryStage.setTitle("C482 - Modify Part");
+        }
         
         // Setting up layout
         GridPane grid = new GridPane();
@@ -99,6 +171,7 @@ public class C482Project extends Application {
 
 
         // Objects
+        
         Label addPartLabel = new Label("Add Part");
         GridPane.setConstraints(addPartLabel, 0, 0);
 //        addPartLabel.setScaleX(1.5);
@@ -162,11 +235,13 @@ public class C482Project extends Application {
         GridPane.setConstraints(saveButton, 0, 7);
         saveButton.setOnAction(e -> {
         // TODO: Proper validation
+        
+        
         Part part = new Part(partID, nameText.getText(), Double.parseDouble(priceText.getText()), Integer.parseInt(invText.getText()), Integer.parseInt(minText.getText()), Integer.parseInt(maxText.getText()));
             if (newPart) {
                 inv.addPart(part);
             } else {
-                inv.changePart(part);
+                inv.modifyPart(part);
             }
             primaryStage.setScene(mainScreenScene());
         });

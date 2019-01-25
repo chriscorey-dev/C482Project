@@ -38,15 +38,29 @@ public class Inventory {
         
     }
     
+    public void modifyProduct(Part newPart) {
+        Part oldPart = lookupPart(newPart.getPartID());
+        if (oldPart == null) {return;}
+        
+        oldPart.setName(newPart.getName());
+        oldPart.setPrice(newPart.getPrice());
+        oldPart.setInStock(newPart.getInStock());
+        oldPart.setMin(newPart.getMin());
+        oldPart.setMax(newPart.getMax());
+    }
+    
     public void addPart(Part part) {
-        part.setPartID(allParts.size() + 1);
-//        System.out.println(allParts.size() + 1);
-//        part.setPartID(allParts.get(allParts.size() - 1).getPartID());
+//        part.setPartID(allParts.size() + 1);
+        int newPartID = 1;
+        if (allParts.size() > 0) {
+            newPartID = allParts.get(allParts.size() - 1).getPartID() + 1;
+        }
+        part.setPartID(newPartID);
         allParts.add(part);
     }
     
-    public void deletePart(Part part) {
-        
+    public boolean deletePart(Part part) {
+        return allParts.remove(part);
     }
     
     public Part lookupPart(int partID) {
@@ -63,18 +77,7 @@ public class Inventory {
         
     }
     
-    public void changePart(Part newPart) {
-        Part oldPart = lookupPart(newPart.getPartID());
-        if (oldPart == null) {return;}
-        
-        oldPart.setName(newPart.getName());
-        oldPart.setPrice(newPart.getPrice());
-        oldPart.setInStock(newPart.getInStock());
-        oldPart.setMin(newPart.getMin());
-        oldPart.setMax(newPart.getMax());
-    }
-    
-    public void changeProduct(Part newPart) {
+    public void modifyPart(Part newPart) {
         Part oldPart = lookupPart(newPart.getPartID());
         if (oldPart == null) {return;}
         
