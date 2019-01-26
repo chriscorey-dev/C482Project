@@ -28,12 +28,12 @@ public class Product {
     }
 
     public Part lookupAssociatedParts(int partID) {
+        // Consider using inv.products.get(partID)
         for (int i = 0; i < associatedParts.size() - 1; i++) {
             if (associatedParts.get(i).getPartID() == partID) {
                 return associatedParts.get(i);
             }
         }
-        
         return null;
     }
 

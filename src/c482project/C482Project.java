@@ -1,5 +1,6 @@
 package c482project;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -14,13 +15,32 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class C482Project extends Application {
     
+    // TODO:
+    // Better layout
+    // Tie in associated parts to products
+    // Tie in in-house & outsourced to parts
+    // Search bars
+    // Validation & error handling
+    // Testing
+    // Cleanup
+    
     private static Stage primaryStage;
-        
     private static final Inventory inv = new Inventory();
     
     public static void main(String[] args) {
@@ -47,7 +67,6 @@ public class C482Project extends Application {
         inv.addProduct(new Product(associatedParts, 2, "Product 2", 2.99, 2, 1, 20));
         
         
-//        primaryStage.setScene(addPartScene());
         primaryStage.setScene(mainScreenScene());
         primaryStage.show();
     }
@@ -56,23 +75,23 @@ public class C482Project extends Application {
         primaryStage.setTitle("C482 - Main Menu");
         
         // Setting up layout
-        GridPane grid = new GridPane();
-        grid.setPadding(new Insets(10,10,10,10));
-        grid.setVgap(8);
-        grid.setHgap(10);
+
+        Label titleLabel = new Label("Inventory Management System");
+//        Text titleText = new Text("Inventory Management System");
+        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         
         
+        Label partsLabel = new Label("Parts");
+        partsLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         
-//        System.out.println("Products: " + inv.getAllProducts());
-//        System.out.println("Parts: " + inv.getAllParts());
+        Button partsSearchButton = new Button("Search");
         
-        
+        TextField partsSearchText = new TextField();
+        partsSearchText.setPromptText("Search...");
         
         
         // Parts TableView
         TableView<Part> partsTable= new TableView<>();
-        GridPane.setConstraints(partsTable, 0, 0);
-//        partsTable.setMinWidth(200);
         partsTable.setMaxHeight(150);
         
         TableColumn<Part, Integer> idColumn = new TableColumn<>("Part ID");
@@ -97,11 +116,9 @@ public class C482Project extends Application {
         
         // Part buttons
         Button addPartButton = new Button("Add");
-        GridPane.setConstraints(addPartButton, 0, 1);
         addPartButton.setOnAction(e -> primaryStage.setScene(addPartScene(0)));
         
         Button modPartButton = new Button("Modify");
-        GridPane.setConstraints(modPartButton, 0, 2);
         modPartButton.setOnAction(e -> {
             primaryStage.setScene(addPartScene(partsTable.getSelectionModel().getSelectedItem().getPartID()));
             partsTable.setItems(getParts());
@@ -109,7 +126,6 @@ public class C482Project extends Application {
         });
         
         Button deletePartButton = new Button("Delete");
-        GridPane.setConstraints(deletePartButton, 0, 3);
         deletePartButton.setOnAction(e -> {
             Part selectedPart = partsTable.getSelectionModel().getSelectedItem();
             // TODO: Shoudn't be able to delete or modify if there are no parts
@@ -121,9 +137,17 @@ public class C482Project extends Application {
         });
         
         
+        Label prodsLabel = new Label("Products");
+        prodsLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        
+        Button prodsSearchButton = new Button("Search");
+        
+        TextField prodsSearchText = new TextField();
+        prodsSearchText.setPromptText("Search...");
+        
+        
         // Products TableView
         TableView<Product> prodsTable= new TableView<>();
-        GridPane.setConstraints(prodsTable, 1, 0);
         prodsTable.setMaxHeight(150);
         
         TableColumn<Product, Integer> prodIdColumn = new TableColumn<>("Product ID");
@@ -149,25 +173,16 @@ public class C482Project extends Application {
         
         // Product buttons
         Button addProdButton = new Button("Add");
-        GridPane.setConstraints(addProdButton, 1, 1);
         addProdButton.setOnAction(e -> primaryStage.setScene(addProductScene(0)));
         
         Button modProdButton = new Button("Modify");
-        GridPane.setConstraints(modProdButton, 1, 2);
         modProdButton.setOnAction(e -> {
             primaryStage.setScene(addProductScene(prodsTable.getSelectionModel().getSelectedItem().getProductID()));
             prodsTable.setItems(getProducts());
             prodsTable.getSelectionModel().selectFirst();
         });
-        
-//        Button deleteProdButton = new Button("Delete Product");
-//        GridPane.setConstraints(deleteProdButton, 1, 3);
-////        deleteProdButton.setOnAction(e -> inv.removeProduct(1));
 
-        
-        Button deleteProdButton = new Button("Delete");
-        GridPane.setConstraints(deleteProdButton, 1, 3);
-        deleteProdButton.setOnAction(e -> {
+        Button deleteProdButton = new Button("Delete");        deleteProdButton.setOnAction(e -> {
             Product selectedProd = prodsTable.getSelectionModel().getSelectedItem();
             // TODO: Shoudn't be able to delete or modify if there are no products
             if (ConfirmationBox.display("Are you sure you want to delete this product: " + selectedProd.getName())) {
@@ -180,19 +195,74 @@ public class C482Project extends Application {
         
 
         Button exitButton = new Button("Exit");
-        GridPane.setConstraints(exitButton, 0, 4);
         exitButton.setOnAction(e -> primaryStage.close());
         
         
+        // Set up layout
+        HBox centerHBox = new HBox();
         
         
+        VBox partsVBox = new VBox();
+        partsVBox.setStyle("-fx-border-color: black");
+        
+        HBox partsHBox1 = new HBox();
+        HBox partsHBox2 = new HBox();
+        HBox partsHBox3 = new HBox();
+        partsHBox1.setSpacing(10);
+        partsHBox1.setPadding(new Insets(10));
+        partsHBox2.setSpacing(10);
+        partsHBox2.setPadding(new Insets(10));
+        partsHBox3.setSpacing(10);
+        partsHBox3.setPadding(new Insets(10));
+        
+        partsHBox1.getChildren().addAll(partsLabel, partsSearchButton, partsSearchText);
+        partsHBox2.getChildren().addAll(partsTable);
+        partsHBox3.getChildren().addAll(addPartButton, modPartButton, deletePartButton);
+        
+        partsVBox.getChildren().addAll(partsHBox1, partsHBox2, partsHBox3);
         
         
-
-        // Adding objects to layout, and layout to scene
-        grid.getChildren().addAll(partsTable, prodsTable);
-        grid.getChildren().addAll(addPartButton, modPartButton, deletePartButton, addProdButton, modProdButton, deleteProdButton, exitButton);
-        Scene scene = new Scene(grid, 600, 500);
+        VBox prodsVBox = new VBox();
+        prodsVBox.setStyle("-fx-border-color: black");
+        
+        HBox prodsHBox1 = new HBox();
+        HBox prodsHBox2 = new HBox();
+        HBox prodsHBox3 = new HBox();
+        prodsHBox1.setSpacing(10);
+        prodsHBox1.setPadding(new Insets(10));
+        prodsHBox2.setSpacing(10);
+        prodsHBox2.setPadding(new Insets(10));
+        prodsHBox3.setSpacing(10);
+        prodsHBox3.setPadding(new Insets(10));
+        
+        prodsHBox1.getChildren().addAll(prodsLabel, prodsSearchButton, prodsSearchText);
+        prodsHBox2.getChildren().addAll(prodsTable);
+        prodsHBox3.getChildren().addAll(addProdButton, modProdButton, deleteProdButton);
+        
+        prodsVBox.getChildren().addAll(prodsHBox1, prodsHBox2, prodsHBox3);
+        
+        
+        centerHBox.getChildren().addAll(partsVBox, prodsVBox);
+        
+        
+        BorderPane layout = new BorderPane();
+        
+        AnchorPane topAnchor = new AnchorPane();
+        topAnchor.getChildren().add(titleLabel);
+        AnchorPane.setTopAnchor(titleLabel, 8.0);
+        AnchorPane.setLeftAnchor(titleLabel, 5.0);
+        layout.setTop(topAnchor);
+        
+        AnchorPane bottomAnchor = new AnchorPane();
+        bottomAnchor.getChildren().add(exitButton);
+        AnchorPane.setBottomAnchor(exitButton, 8.0);
+        AnchorPane.setRightAnchor(exitButton, 5.0);
+        layout.setBottom(bottomAnchor);
+        
+        layout.setCenter(centerHBox);
+    
+    
+        Scene scene = new Scene(layout, 1000, 500);
         
         return scene;
     }

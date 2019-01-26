@@ -12,8 +12,8 @@ public class Inventory {
     }
     
     Inventory() {
-        this.products = new ArrayList<Product>();
-        this.allParts = new ArrayList<Part>();
+        this.products = new ArrayList<>();
+        this.allParts = new ArrayList<>();
     }
     
     // TEMP: probably
@@ -35,12 +35,13 @@ public class Inventory {
         products.add(product);
     }
     
+    // This is the required method specified in the UML diagram...
     public boolean removeProduct(int productID) {
         // Validation
-//        return allParts.remove(part);
         return products.remove(lookupProduct(productID));
     }
     
+    // But this method makes more sense to use... and is closer to how the deletePart method works
     public boolean deleteProduct(Product product) {
         // Validation
         return products.remove(product);

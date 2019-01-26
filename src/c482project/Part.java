@@ -14,13 +14,6 @@ public class Part {
         this.max = max;
     }
 
-    public Part(String name) {
-        this.name = name;
-    }
-
-    public Part() {
-    }
-
     public int getPartID() {
         return partID;
     }
