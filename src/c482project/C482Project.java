@@ -1,10 +1,10 @@
 package c482project;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -15,13 +15,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -35,7 +32,6 @@ public class C482Project extends Application {
     // Better layout
     // Tie in associated parts to products
     // Tie in in-house & outsourced to parts
-    // Search bars
     // Validation & error handling
     // Testing
     // Cleanup
@@ -84,15 +80,48 @@ public class C482Project extends Application {
         Label partsLabel = new Label("Parts");
         partsLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         
-        Button partsSearchButton = new Button("Search");
-        
         TextField partsSearchText = new TextField();
         partsSearchText.setPromptText("Search...");
+        // Pressing enter key
+//        partsSearchText.setOnKeyPressed(new EventHandler<KeyEvent>()
+//        {
+//            @Override
+//            public void handle(KeyEvent ke)
+//            {
+//                if (ke.getCode().equals(KeyCode.ENTER))
+//                {
+////                    doSomething();
+//                    System.out.println("enter hit");
+//                }
+//            }
+//        });
+        
+        // Parts TavleView
+        TableView<Part> partsTable= new TableView<>();
+        
+        // Parts search
+        Button partsSearchButton = new Button("Search");
+        partsSearchButton.setOnAction(e -> {
+//            System.out.println(partsSearchText.getText().toLowerCase());
+            ArrayList<Part> searchedParts = new ArrayList<>();
+            for (int i = 0; i < inv.getAllParts().size(); i++) {
+                Part part = inv.getAllParts().get(i);
+//                if ("Engine".equals(part.getName())) {
+//                System.out.println(part.getName().toLowerCase());
+                if (part.getName().toLowerCase().contains(partsSearchText.getText().toLowerCase())) {
+                    searchedParts.add(part);
+                    System.out.println(part.getName());
+                }
+            }
+//            getParts(searchedParts);
+            partsTable.setItems(getParts(searchedParts));
+            partsTable.getSelectionModel().selectFirst();
+        });
         
         
         // Parts TableView
-        TableView<Part> partsTable= new TableView<>();
-        partsTable.setMaxHeight(150);
+//        partsTable.setMaxHeight(150);
+        partsTable.setMinWidth(400);
         
         TableColumn<Part, Integer> idColumn = new TableColumn<>("Part ID");
         idColumn.setMinWidth(50);
@@ -110,7 +139,7 @@ public class C482Project extends Application {
         priceColumn.setMinWidth(50);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         
-        partsTable.setItems(getParts());
+        partsTable.setItems(getParts(inv.getAllParts()));
         partsTable.getSelectionModel().selectFirst();
         partsTable.getColumns().addAll(idColumn, nameColumn, invColumn, priceColumn);
         
@@ -121,7 +150,7 @@ public class C482Project extends Application {
         Button modPartButton = new Button("Modify");
         modPartButton.setOnAction(e -> {
             primaryStage.setScene(addPartScene(partsTable.getSelectionModel().getSelectedItem().getPartID()));
-            partsTable.setItems(getParts());
+            partsTable.setItems(getParts(inv.getAllParts()));
             partsTable.getSelectionModel().selectFirst();
         });
         
@@ -131,7 +160,7 @@ public class C482Project extends Application {
             // TODO: Shoudn't be able to delete or modify if there are no parts
             if (ConfirmationBox.display("Are you sure you want to delete this part: " + selectedPart.getName())) {
                 inv.deletePart(selectedPart);
-                partsTable.setItems(getParts());
+                partsTable.setItems(getParts(inv.getAllParts()));
                 partsTable.getSelectionModel().selectFirst();
             }
         });
@@ -140,15 +169,31 @@ public class C482Project extends Application {
         Label prodsLabel = new Label("Products");
         prodsLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         
-        Button prodsSearchButton = new Button("Search");
-        
         TextField prodsSearchText = new TextField();
         prodsSearchText.setPromptText("Search...");
         
-        
         // Products TableView
         TableView<Product> prodsTable= new TableView<>();
-        prodsTable.setMaxHeight(150);
+        
+        Button prodsSearchButton = new Button("Search");
+        prodsSearchButton.setOnAction(e -> {
+//            System.out.println(prodsSearchText.getText().toLowerCase());
+            ArrayList<Product> searchedProds = new ArrayList<>();
+            for (int i = 0; i < inv.getAllProducts().size(); i++) {
+                Product product = inv.getAllProducts().get(i);
+                if (product.getName().toLowerCase().contains(prodsSearchText.getText().toLowerCase())) {
+                    searchedProds.add(product);
+                    System.out.println(product.getName());
+                }
+            }
+            prodsTable.setItems(getProducts(searchedProds));
+            prodsTable.getSelectionModel().selectFirst();
+        });
+        
+        
+        // Products TableView
+//        prodsTable.setMaxHeight(150);
+        prodsTable.setMinWidth(400);
         
         TableColumn<Product, Integer> prodIdColumn = new TableColumn<>("Product ID");
         prodIdColumn.setMinWidth(50);
@@ -166,7 +211,7 @@ public class C482Project extends Application {
         prodPriceColumn.setMinWidth(50);
         prodPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         
-        prodsTable.setItems(getProducts());
+        prodsTable.setItems(getProducts(inv.getAllProducts()));
         prodsTable.getSelectionModel().selectFirst();
         prodsTable.getColumns().addAll(prodIdColumn, prodNameColumn, prodInvColumn, prodPriceColumn);
         
@@ -178,7 +223,7 @@ public class C482Project extends Application {
         Button modProdButton = new Button("Modify");
         modProdButton.setOnAction(e -> {
             primaryStage.setScene(addProductScene(prodsTable.getSelectionModel().getSelectedItem().getProductID()));
-            prodsTable.setItems(getProducts());
+            prodsTable.setItems(getProducts(inv.getAllProducts()));
             prodsTable.getSelectionModel().selectFirst();
         });
 
@@ -188,7 +233,7 @@ public class C482Project extends Application {
             if (ConfirmationBox.display("Are you sure you want to delete this product: " + selectedProd.getName())) {
 //                inv.removeProduct(selectedProd.getProductID());
                 inv.deleteProduct(selectedProd);
-                prodsTable.setItems(getProducts());
+                prodsTable.setItems(getProducts(inv.getAllProducts()));
                 prodsTable.getSelectionModel().selectFirst();
             }
         });
@@ -203,7 +248,7 @@ public class C482Project extends Application {
         
         
         VBox partsVBox = new VBox();
-        partsVBox.setStyle("-fx-border-color: black");
+//        partsVBox.setStyle("-fx-border-color: black");
         
         HBox partsHBox1 = new HBox();
         HBox partsHBox2 = new HBox();
@@ -223,7 +268,7 @@ public class C482Project extends Application {
         
         
         VBox prodsVBox = new VBox();
-        prodsVBox.setStyle("-fx-border-color: black");
+//        prodsVBox.setStyle("-fx-border-color: black");
         
         HBox prodsHBox1 = new HBox();
         HBox prodsHBox2 = new HBox();
@@ -245,20 +290,28 @@ public class C482Project extends Application {
         centerHBox.getChildren().addAll(partsVBox, prodsVBox);
         
         
+        // Border Top
         BorderPane layout = new BorderPane();
         
         AnchorPane topAnchor = new AnchorPane();
         topAnchor.getChildren().add(titleLabel);
-        AnchorPane.setTopAnchor(titleLabel, 8.0);
-        AnchorPane.setLeftAnchor(titleLabel, 5.0);
-        layout.setTop(topAnchor);
+        AnchorPane.setTopAnchor(titleLabel, 0.0);
+        AnchorPane.setLeftAnchor(titleLabel, 0.0);
+        topAnchor.setPadding(new Insets(10));
         
+        
+        // Border Bottom
         AnchorPane bottomAnchor = new AnchorPane();
         bottomAnchor.getChildren().add(exitButton);
-        AnchorPane.setBottomAnchor(exitButton, 8.0);
-        AnchorPane.setRightAnchor(exitButton, 5.0);
-        layout.setBottom(bottomAnchor);
+        AnchorPane.setBottomAnchor(exitButton, 0.0);
+        AnchorPane.setRightAnchor(exitButton, 0.0);
+        bottomAnchor.setPadding(new Insets(10));
         
+        
+        
+        // Putting bottom first allows Exit to be selected automatically
+        layout.setBottom(bottomAnchor);
+        layout.setTop(topAnchor);
         layout.setCenter(centerHBox);
     
     
@@ -269,21 +322,22 @@ public class C482Project extends Application {
     
     
     // TEMP: maybe. Refreshes list view
-    static ObservableList<Part> getParts() {
+    static ObservableList<Part> getParts(ArrayList<Part> parts) {
         // ObservableList
-        ObservableList<Part> parts = FXCollections.observableArrayList();
-        parts.removeAll();
-        parts.addAll(inv.getAllParts());
-        return parts;
+        ObservableList<Part> observableParts = FXCollections.observableArrayList();
+        observableParts.removeAll();
+//        parts.addAll(inv.getAllParts());
+        observableParts.addAll(parts);
+        return observableParts;
     }
     
     
     // TEMP: maybe. Refreshes list view
-    static ObservableList<Product> getProducts() {
+    static ObservableList<Product> getProducts(ArrayList<Product> products) {
         // ObservableList
         ObservableList<Product> prods = FXCollections.observableArrayList();
         prods.removeAll();
-        prods.addAll(inv.getAllProducts());
+        prods.addAll(products);
         return prods;
     }
     
