@@ -19,9 +19,9 @@ public class Product {
         this.max = max;
     }
 
-    public Product(int productID) {
-        this.productID = productID;
-    }
+//    public Product(int productID) {
+//        this.productID = productID;
+//    }
     
     public void addAssociatedPart(Part part) {
         associatedParts.add(part);

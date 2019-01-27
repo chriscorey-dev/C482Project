@@ -102,13 +102,14 @@ public class Inventory {
     }
     
     public void modifyPart(Part newPart) {
-        Part oldPart = lookupPart(newPart.getPartID());
-        if (oldPart == null) {return;}
-        
-        oldPart.setName(newPart.getName());
-        oldPart.setPrice(newPart.getPrice());
-        oldPart.setInStock(newPart.getInStock());
-        oldPart.setMin(newPart.getMin());
-        oldPart.setMax(newPart.getMax());
+        allParts.set(allParts.indexOf(lookupPart(newPart.getPartID())), newPart);
+//        Part oldPart = lookupPart(newPart.getPartID());
+//        if (oldPart == null) {return;}
+//        
+//        oldPart.setName(newPart.getName());
+//        oldPart.setPrice(newPart.getPrice());
+//        oldPart.setInStock(newPart.getInStock());
+//        oldPart.setMin(newPart.getMin());
+//        oldPart.setMax(newPart.getMax());
     }
 }

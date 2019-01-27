@@ -50,8 +50,26 @@ public class C482Project extends Application {
         
         
         // TEST 01
-        inv.addPart(new Part(1, "Engine", 499.99, 1, 1, 5));
-        inv.addPart(new Part(2, "Tire", 49.99, 4, 1, 8));
+        inv.addPart(new Inhouse(5, 1, "Engine", 499.99, 1, 1, 5));
+        inv.addPart(new Outsourced("Company 1", 2, "Tire", 49.99, 4, 1, 8));
+
+//        Part part = new Inhouse(1);
+//        part.setPartID(1);
+//        part.setName("Engine");
+//        part.setPrice(499.99);
+//        part.setInStock(1);
+//        part.setMin(1);
+//        part.setMax(5);
+//        inv.addPart(part);
+//
+//        part = new Outsourced("Company 1");
+//        part.setPartID(2);
+//        part.setName("Tire");
+//        part.setPrice(49.99);
+//        part.setInStock(4);
+//        part.setMin(1);
+//        part.setMax(8);
+//        inv.addPart(part);
         
         
         // TEST 02
@@ -68,6 +86,11 @@ public class C482Project extends Application {
     }
     
     static Scene mainScreenScene() {
+        // TODO: Main menu
+        // Improve layout
+        // Search box: Hitting enter searches field
+        // Disable buttons when nothing is selected
+        
         primaryStage.setTitle("C482 - Main Menu");
         
         // Setting up layout
@@ -97,6 +120,7 @@ public class C482Project extends Application {
 //        });
         
         // Parts TavleView
+        // TODO: Make this a method to be able to reuse it.
         TableView<Part> partsTable= new TableView<>();
         
         // Parts search
@@ -177,7 +201,6 @@ public class C482Project extends Application {
         
         Button prodsSearchButton = new Button("Search");
         prodsSearchButton.setOnAction(e -> {
-//            System.out.println(prodsSearchText.getText().toLowerCase());
             ArrayList<Product> searchedProds = new ArrayList<>();
             for (int i = 0; i < inv.getAllProducts().size(); i++) {
                 Product product = inv.getAllProducts().get(i);
@@ -342,6 +365,8 @@ public class C482Project extends Application {
     }
     
     static Scene addPartScene(int partID) {
+        // TODO: Add part
+        // Validation
         
         // Checks if adding or modifying
         boolean newPart = partID == 0;
@@ -419,22 +444,67 @@ public class C482Project extends Application {
         GridPane.setConstraints(minText, 3, 5);
         minText.setPromptText("Min");
         
-        Label distributorLabel = new Label("Company Name");
+        Label distributorLabel = new Label("Machine ID");
         GridPane.setConstraints(distributorLabel, 0, 6);
+        
         TextField distributorText = new TextField();
         GridPane.setConstraints(distributorText, 1, 6);
-        distributorText.setPromptText("Company Name");
+        distributorText.setPromptText("Mach ID");
+        
+        
+        // TODO: Put this action in a method. It's used 4(?) times
+        inHouseRadio.setOnAction(e -> {
+            if (deliveryMethodToggle.getSelectedToggle() == inHouseRadio) {
+                distributorLabel.setText("Machine ID");
+                distributorText.setPromptText("Mach ID");
+            } else {
+                distributorLabel.setText("Company Name");
+                distributorText.setPromptText("Comp Nm");
+            }
+        });
+        outsourcedRadio.setOnAction(e -> {
+            if (deliveryMethodToggle.getSelectedToggle() == inHouseRadio) {
+                distributorLabel.setText("Machine ID");
+                distributorText.setPromptText("Mach ID");
+            } else {
+                distributorLabel.setText("Company Name");
+                distributorText.setPromptText("Comp Nm");
+            }
+        });
         
         Button saveButton = new Button("Save");
         GridPane.setConstraints(saveButton, 0, 7);
         saveButton.setOnAction(e -> {
-        // TODO: Proper validation
-        Part part = new Part(partID, nameText.getText(), Double.parseDouble(priceText.getText()), Integer.parseInt(invText.getText()), Integer.parseInt(minText.getText()), Integer.parseInt(maxText.getText()));
+            // TODO: Proper validation
+    //        Part part = new Part(partID, nameText.getText(), Double.parseDouble(priceText.getText()), Integer.parseInt(invText.getText()), Integer.parseInt(minText.getText()), Integer.parseInt(maxText.getText()));
+            Part part;
+
+            if (deliveryMethodToggle.getSelectedToggle() == inHouseRadio) {
+                part = new Inhouse(Integer.parseInt(distributorText.getText()),
+                        partID,
+                        nameText.getText(),
+                        Double.parseDouble(priceText.getText()),
+                        Integer.parseInt(invText.getText()),
+                        Integer.parseInt(minText.getText()),
+                        Integer.parseInt(maxText.getText())
+                );
+            } else {
+                part = new Outsourced(distributorText.getText(),
+                        partID,
+                        nameText.getText(),
+                        Double.parseDouble(priceText.getText()),
+                        Integer.parseInt(invText.getText()),
+                        Integer.parseInt(minText.getText()),
+                        Integer.parseInt(maxText.getText())
+                );
+            }
+
             if (newPart) {
                 inv.addPart(part);
             } else {
                 inv.modifyPart(part);
             }
+
             primaryStage.setScene(mainScreenScene());
         });
         
@@ -445,7 +515,21 @@ public class C482Project extends Application {
 
         // If part already exists, populate fields
         if (!newPart) {
+            if (deliveryMethodToggle.getSelectedToggle() == inHouseRadio) {
+                distributorLabel.setText("Machine ID");
+                distributorText.setPromptText("Mach ID");
+            } else {
+                distributorLabel.setText("Company Name");
+                distributorText.setPromptText("Comp Nm");
+            }
             Part modPart = inv.lookupPart(partID);
+            if (modPart.getCompanyName() == null) {
+                inHouseRadio.setSelected(true);
+                distributorText.setText(Integer.toString(modPart.getMachineID()));
+            } else {
+                outsourcedRadio.setSelected(true);
+                distributorText.setText(modPart.getCompanyName());
+            }
             idText.setText(Integer.toString(modPart.getPartID()));
             nameText.setText(modPart.getName());
             invText.setText(Integer.toString(modPart.getInStock()));

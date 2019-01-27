@@ -1,18 +1,29 @@
 package c482project;
 
-public class Part {
+public abstract class Part {
     private String name;
     private double price;
     private int partID, inStock, min, max;
 
-    public Part(int partID, String name, double price, int inStock, int min, int max) {
-        this.partID = partID;
-        this.name = name;
-        this.price = price;
-        this.inStock = inStock;
-        this.min = min;
-        this.max = max;
-    }
+//    public Part(int partID, String name, double price, int inStock, int min, int max) {
+//        this.partID = partID;
+//        this.name = name;
+//        this.price = price;
+//        this.inStock = inStock;
+//        this.min = min;
+//        this.max = max;
+//    }
+    
+//    public Part() {
+//    }
+    
+    
+    abstract int getMachineID();
+    abstract void setMachineID(int machineID);
+    
+    abstract String getCompanyName();
+    abstract void setCompanyName(String companyName);
+    
 
     public int getPartID() {
         return partID;
