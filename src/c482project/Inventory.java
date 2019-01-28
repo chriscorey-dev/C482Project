@@ -74,6 +74,7 @@ public class Inventory {
     }
     
     public void addPart(Part part) {
+        // TODO: If the last item was deleted, the IDs don't retain thier iteration and continue from the ID nearest to the end of the list. Small bug, I probably won't fix this.
 //        part.setPartID(allParts.size() + 1);
         int newPartID = 1;
         if (allParts.size() > 0) {

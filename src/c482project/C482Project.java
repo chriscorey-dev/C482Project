@@ -30,8 +30,6 @@ public class C482Project extends Application {
     
     // TODO:
     // Better layout
-    // Tie in associated parts to products
-    // Tie in in-house & outsourced to parts
     // Validation & error handling
     // Testing
     // Cleanup
@@ -391,80 +389,62 @@ public class C482Project extends Application {
             primaryStage.setTitle("C482 - Modify Part");
         }
         
-        // Setting up layout
-        GridPane grid = new GridPane();
-        grid.setPadding(new Insets(10,10,10,10));
-        grid.setVgap(8);
-        grid.setHgap(10);
         
 
 
         // Objects
-        
         Label addPartLabel = new Label();
+        
         if (newPart) {
             addPartLabel.setText("Add Part");
         } else {
             addPartLabel.setText("Modify Part");
         }
-        GridPane.setConstraints(addPartLabel, 0, 0);
-//        addPartLabel.setScaleX(1.5);
-//        addPartLabel.setScaleY(1.5);
         
         ToggleGroup deliveryMethodToggle = new ToggleGroup();
         
         RadioButton inHouseRadio = new RadioButton("In-House");
-        GridPane.setConstraints(inHouseRadio, 1, 0);
         inHouseRadio.setToggleGroup(deliveryMethodToggle);
         inHouseRadio.setSelected(true);
         
         RadioButton outsourcedRadio = new RadioButton("Outsourced");
-        GridPane.setConstraints(outsourcedRadio, 2, 0);
         outsourcedRadio.setToggleGroup(deliveryMethodToggle);
+        HBox radioBox = new HBox(addPartLabel, inHouseRadio, outsourcedRadio);
         
         Label idLabel = new Label("ID");
-        GridPane.setConstraints(idLabel, 0, 1);
         TextField idText = new TextField("Auto Gen - Disabled");
-        GridPane.setConstraints(idText, 1, 1);
-//        idText.setPromptText("Auto Gen - Disabled");
         idText.setDisable(true);
+        HBox idBox = new HBox(idLabel, idText);
         
         Label nameLabel = new Label("Name");
-        GridPane.setConstraints(nameLabel, 0, 2);
         TextField nameText = new TextField();
-        GridPane.setConstraints(nameText, 1, 2);
         nameText.setPromptText("Name");
+        HBox nameBox = new HBox(nameLabel, nameText);
         
         Label invLabel = new Label("Inv");
-        GridPane.setConstraints(invLabel, 0, 3);
         TextField invText = new TextField();
-        GridPane.setConstraints(invText, 1, 3);
         invText.setPromptText("Inv");
+        HBox invBox = new HBox(invLabel, invText);
         
         Label priceLabel = new Label("Price/Cost");
-        GridPane.setConstraints(priceLabel, 0, 4);
         TextField priceText = new TextField();
-        GridPane.setConstraints(priceText, 1, 4);
         priceText.setPromptText("Price/Cost");
+        HBox priceBox = new HBox(priceLabel, priceText);
         
         Label maxLabel = new Label("Max");
-        GridPane.setConstraints(maxLabel, 0, 5);
         TextField maxText = new TextField();
-        GridPane.setConstraints(maxText, 1, 5);
         maxText.setPromptText("Max");
         
         Label minLabel = new Label("Min");
-        GridPane.setConstraints(minLabel, 2, 5);
         TextField minText = new TextField();
-        GridPane.setConstraints(minText, 3, 5);
         minText.setPromptText("Min");
+        HBox minMaxBox = new HBox(maxLabel, maxText, minLabel, minText);
         
         Label distributorLabel = new Label("Machine ID");
-        GridPane.setConstraints(distributorLabel, 0, 6);
         
         TextField distributorText = new TextField();
-        GridPane.setConstraints(distributorText, 1, 6);
         distributorText.setPromptText("Mach ID");
+        HBox distributorBox = new HBox(distributorLabel, distributorText);
         
         
         // TODO: Put this action in a method. It's used 4(?) times
@@ -488,7 +468,6 @@ public class C482Project extends Application {
         });
         
         Button saveButton = new Button("Save");
-        GridPane.setConstraints(saveButton, 0, 7);
         saveButton.setOnAction(e -> {
             // TODO: Proper validation
     //        Part part = new Part(partID, nameText.getText(), Double.parseDouble(priceText.getText()), Integer.parseInt(invText.getText()), Integer.parseInt(minText.getText()), Integer.parseInt(maxText.getText()));
@@ -524,12 +503,14 @@ public class C482Project extends Application {
         });
         
         Button cancelButton = new Button("Cancel");
-        GridPane.setConstraints(cancelButton, 1, 7);
         cancelButton.setOnAction(e -> {
             if (ConfirmationBox.display("Are you sure you want to cancel?")) {
                 primaryStage.setScene(mainScreenScene());
             }
         });
+        
+        
+        HBox saveCancelBox = new HBox(saveButton, cancelButton);
         
 
         // If part already exists, populate fields
@@ -557,18 +538,24 @@ public class C482Project extends Application {
             minText.setText(Integer.toString(modPart.getMin()));
         }
 
-        // Adding objects to layout, and layout to scene
-        grid.getChildren().addAll(addPartLabel, idLabel, nameLabel, invLabel, priceLabel, maxLabel, minLabel, distributorLabel);
-        grid.getChildren().addAll(idText, nameText, invText, priceText, maxText, minText, distributorText);
-        grid.getChildren().addAll(saveButton, cancelButton);
-        grid.getChildren().addAll(inHouseRadio, outsourcedRadio);
+//        // Adding objects to layout, and layout to scene
+//        grid.getChildren().addAll(addPartLabel, idLabel, nameLabel, invLabel, priceLabel, maxLabel, minLabel, distributorLabel);
+//        grid.getChildren().addAll(idText, nameText, invText, priceText, maxText, minText, distributorText);
+//        grid.getChildren().addAll(saveButton, cancelButton);
+//        grid.getChildren().addAll(inHouseRadio, outsourcedRadio);
+
+        // Setting up layout
+        VBox layout = new VBox(radioBox, idBox, nameBox, invBox, priceBox, minMaxBox, distributorBox, saveCancelBox);
         
-        Scene scene = new Scene(grid, 600, 500);
+        Scene scene = new Scene(layout, 600, 500);
         
         return scene;
     }
     
     static Scene addProductScene(int prodID) {
+        
+        // TODO: Fix bug: Modifying fields of a part doesn't reflect them in associated parts when modifying parts.
+        // This is because they're saved as a different entity. I might need to use associated parts directly from the inventory
         
         // Checks if adding or modifying
         boolean newProd = prodID == 0;
