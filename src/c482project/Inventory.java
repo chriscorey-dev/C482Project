@@ -112,7 +112,13 @@ public class Inventory {
     }
     
     public void modifyPart(Part newPart) {
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).lookupAssociatedPart(newPart.getPartID()) == newPart) {
+                System.out.println("part found");
+            }
+        }
         allParts.set(allParts.indexOf(lookupPart(newPart.getPartID())), newPart);
+        
 //        Part oldPart = lookupPart(newPart.getPartID());
 //        if (oldPart == null) {return;}
 //        

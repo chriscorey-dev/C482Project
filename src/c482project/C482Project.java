@@ -72,7 +72,7 @@ public class C482Project extends Application {
         
         // TEST 02
         // (ArrayList<Part> associatedParts, int productID, String name, double price, int inStock, int min, int max)
-        ArrayList<Part> associatedParts = new ArrayList<>(); // TODO: Build out associated parts
+        ArrayList<Part> associatedParts = new ArrayList<>();
         associatedParts.add(inv.lookupPart(1));
         associatedParts.add(inv.lookupPart(2));
         inv.addProduct(new Product(associatedParts, 1, "Product 1", 99.99, 4, 1, 10));
@@ -154,7 +154,6 @@ public class C482Project extends Application {
         Button deletePartButton = new Button("Delete");
         deletePartButton.setOnAction(e -> {
             Part selectedPart = partsTable.getSelectionModel().getSelectedItem();
-            // TODO: Shoudn't be able to delete or modify if there are no parts
             if (ConfirmationBox.display("Are you sure you want to delete this part: " + selectedPart.getName())) {
                 inv.deletePart(selectedPart);
                 partsTable.setItems(getParts(inv.getAllParts()));
@@ -204,7 +203,6 @@ public class C482Project extends Application {
         Button deleteProdButton = new Button("Delete");
         deleteProdButton.setOnAction(e -> {
             Product selectedProd = prodsTable.getSelectionModel().getSelectedItem();
-            // TODO: Shoudn't be able to delete or modify if there are no products
             if (ConfirmationBox.display("Are you sure you want to delete this product: " + selectedProd.getName())) {
 //                inv.removeProduct(selectedProd.getProductID());
                 inv.deleteProduct(selectedProd);
@@ -386,7 +384,6 @@ public class C482Project extends Application {
     }
     
     static Scene addPartScene(int partID) {
-        // TODO: Add part
         // Validation
         
         // Checks if adding or modifying
@@ -562,8 +559,9 @@ public class C482Project extends Application {
     
     static Scene addProductScene(int prodID) {
         
-        // TODO: Fix bug: Modifying fields of a part doesn't reflect them in associated parts when modifying parts.
+        // Fixed: Fix bug: Modifying fields of a part doesn't reflect them in associated parts when modifying parts.
         // This is because they're saved as a different entity. I might need to use associated parts directly from the inventory
+        // Fixed: Fix bug: changing part distributor re-adds it to the product menu and makes duplicates
         
         // Checks if adding or modifying
         boolean newProd = prodID == 0;
@@ -664,7 +662,7 @@ public class C482Project extends Application {
         });
         
         HBox searchBox = new HBox();
-        searchBox.getChildren().addAll(partsSearchText, partsSearchButton);
+        searchBox.getChildren().addAll(addProdLabel, partsSearchText, partsSearchButton);
         
         
         
@@ -752,10 +750,21 @@ public class C482Project extends Application {
             maxText.setText(Integer.toString(modProd.getMax()));
             minText.setText(Integer.toString(modProd.getMin()));
             
-            unAddedParts.removeAll(unAddedParts);
-            unAddedParts.addAll(modProd.getUnassociatedParts(inv.getAllParts()));
-            addedParts.removeAll(addedParts);
-            addedParts.addAll(modProd.getAssociatedParts());
+//            unAddedParts.removeAll(unAddedParts);
+//            unAddedParts.addAll(modProd.getUnassociatedParts(inv.getAllParts()));
+//            addedParts.removeAll(addedParts);
+//            addedParts.addAll(modProd.getAssociatedParts());
+            
+            addedParts.clear();
+            for (int i = 0; i < inv.getAllParts().size(); i++) {
+                Part part = inv.getAllParts().get(i);
+                if (modProd.lookupAssociatedPart(part.getPartID()) != null) {
+                    addedParts.add(part);
+                }
+            }
+            unAddedParts.clear();
+            unAddedParts.addAll(inv.getAllParts());
+            unAddedParts.removeAll(addedParts);
             
             TableView<Part> partsTable1Display = partsTable1;
             TableView<Part> partsTable2Display = partsTable2;
