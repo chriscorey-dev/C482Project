@@ -6,8 +6,6 @@ import javafx.scene.control.ButtonType;
 
 public class ConfirmationBox {
     
-    static boolean output = false;
-    
     public static boolean display(String msg) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
