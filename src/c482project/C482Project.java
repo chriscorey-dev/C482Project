@@ -148,6 +148,8 @@ public class C482Project extends Application {
             partsTable.setItems(getParts(inv.getAllParts()));
             partsTable.getSelectionModel().selectFirst();
         });
+        partsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> modPartButton.setDisable(partsTable.getItems().isEmpty()));
+        modPartButton.setDisable(partsTable.getItems().isEmpty());
         
         Button deletePartButton = new Button("Delete");
         deletePartButton.setOnAction(e -> {
@@ -159,6 +161,8 @@ public class C482Project extends Application {
                 partsTable.getSelectionModel().selectFirst();
             }
         });
+        partsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> deletePartButton.setDisable(partsTable.getItems().isEmpty()));
+        deletePartButton.setDisable(partsTable.getItems().isEmpty());
         
         
         Label prodsLabel = new Label("Products");
@@ -194,6 +198,8 @@ public class C482Project extends Application {
             prodsTable.setItems(getProducts(inv.getAllProducts()));
             prodsTable.getSelectionModel().selectFirst();
         });
+        prodsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> modProdButton.setDisable(prodsTable.getItems().isEmpty()));
+        modProdButton.setDisable(prodsTable.getItems().isEmpty());
 
         Button deleteProdButton = new Button("Delete");
         deleteProdButton.setOnAction(e -> {
@@ -206,6 +212,8 @@ public class C482Project extends Application {
                 prodsTable.getSelectionModel().selectFirst();
             }
         });
+        prodsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> deleteProdButton.setDisable(prodsTable.getItems().isEmpty()));
+        deleteProdButton.setDisable(prodsTable.getItems().isEmpty());
         
 
         Button exitButton = new Button("Exit");
@@ -676,6 +684,8 @@ public class C482Project extends Application {
             partsTable2final.setItems(getParts(addedParts));
             partsTable2final.getSelectionModel().selectFirst();
         });
+        partsTable1final.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> addButton.setDisable(partsTable1final.getItems().isEmpty()));
+        addButton.setDisable(partsTable1final.getItems().isEmpty());
         
         Button deleteButton = new Button("Delete");
         deleteButton.setOnAction(e -> {
@@ -688,6 +698,8 @@ public class C482Project extends Application {
             partsTable2final.setItems(getParts(addedParts));
             partsTable2final.getSelectionModel().selectFirst();
         });
+        partsTable2final.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> deleteButton.setDisable(partsTable2final.getItems().isEmpty()));
+        deleteButton.setDisable(partsTable2final.getItems().isEmpty());
         
         
         
