@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,7 +15,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -26,11 +24,6 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class C482Project extends Application {
-
-    // TODO:
-    // Validation & error handling
-    // Testing
-    // Cleanup
 
     private static Stage primaryStage;
     private static final Inventory inv = new Inventory();
@@ -47,17 +40,17 @@ public class C482Project extends Application {
 
         // TEST 01
         inv.addPart(new Inhouse(5, 1, "Engine", 499.99, 1, 1, 5));
-        inv.addPart(new Outsourced("Company 1", 2, "Tire", 49.99, 4, 1, 8));
+        inv.addPart(new Outsourced("Company 1", 2, "Tire", 29.99, 4, 1, 8));
 
 
         // TEST 02
         ArrayList<Part> associatedParts = new ArrayList<>();
         associatedParts.add(inv.lookupPart(1));
         associatedParts.add(inv.lookupPart(2));
-        inv.addProduct(new Product(associatedParts, 1, "Car", 99.99, 4, 1, 10));
+        inv.addProduct(new Product(associatedParts, 1, "Car", 999.99, 4, 1, 10));
         associatedParts = new ArrayList();
         associatedParts.add(inv.lookupPart(2));
-        inv.addProduct(new Product(associatedParts, 2, "Bicycle", 2.99, 2, 1, 20));
+        inv.addProduct(new Product(associatedParts, 2, "Bicycle", 99.99, 2, 1, 20));
 
 
         primaryStage.setScene(mainScreenScene());
@@ -83,41 +76,40 @@ public class C482Project extends Application {
 
         TextField partsSearchText = new TextField();
         partsSearchText.setPromptText("Search...");
-        // Pressing enter key
-//        partsSearchText.setOnKeyPressed(new EventHandler<KeyEvent>()
-//        {
-//            @Override
-//            public void handle(KeyEvent ke)
-//            {
-//                if (ke.getCode().equals(KeyCode.ENTER))
-//                {
-////                    doSomething();
-//                    System.out.println("enter hit");
-//                }
-//            }
-//        });
-
         // Parts TavleView
         TableView<Part> partsTable = createPartTableView(inv.getAllParts());
 
         // Parts search
         Button partsSearchButton = new Button("Search");
         partsSearchButton.setOnAction(e -> {
-//            System.out.println(partsSearchText.getText().toLowerCase());
+            // Searching is repeated a lot. Probably could make this a method
             ArrayList<Part> searchedParts = new ArrayList<>();
             for (int i = 0; i < inv.getAllParts().size(); i++) {
                 Part part = inv.getAllParts().get(i);
-//                if ("Engine".equals(part.getName())) {
-//                System.out.println(part.getName().toLowerCase());
                 if (part.getName().toLowerCase().contains(partsSearchText.getText().toLowerCase())) {
                     searchedParts.add(part);
-//                    System.out.println(part.getName());
                 }
             }
-//            getParts(searchedParts);
             partsTable.setItems(getParts(searchedParts));
             partsTable.getSelectionModel().selectFirst();
         });
+        partsSearchText.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                ArrayList<Part> searchedParts = new ArrayList<>();
+                for (int i = 0; i < inv.getAllParts().size(); i++) {
+                    Part part = inv.getAllParts().get(i);
+                    if (part.getName().toLowerCase().contains(partsSearchText.getText().toLowerCase())) {
+                        searchedParts.add(part);
+                    }
+                }
+                partsTable.setItems(getParts(searchedParts));
+                partsTable.getSelectionModel().selectFirst();
+            }
+        });
+        
+        
+        
+        
         // Part buttons
         Button addPartButton = new Button("Add");
         addPartButton.setOnAction(e -> primaryStage.setScene(addPartScene(0)));
@@ -165,6 +157,19 @@ public class C482Project extends Application {
             }
             prodsTable.setItems(getProducts(searchedProds));
             prodsTable.getSelectionModel().selectFirst();
+        });
+        prodsSearchText.setOnKeyPressed(e -> {
+            if(e.getCode() == KeyCode.ENTER) {
+                ArrayList<Product> searchedProds = new ArrayList<>();
+                for (int i = 0; i < inv.getAllProducts().size(); i++) {
+                    Product product = inv.getAllProducts().get(i);
+                    if (product.getName().toLowerCase().contains(prodsSearchText.getText().toLowerCase())) {
+                        searchedProds.add(product);
+                    }
+                }
+                prodsTable.setItems(getProducts(searchedProds));
+                prodsTable.getSelectionModel().selectFirst();
+            }
         });
 
         // Product buttons
@@ -273,10 +278,10 @@ public class C482Project extends Application {
 //        Scene scene = new Scene(layout, 1000, 500);
         Scene scene = new Scene(layout);
         layout.setPadding(new Insets(10, 20, 10, 20));
+//        primaryStage.sizeToScene();;
 
         return scene;
     }
-
 //    static private HBox searchBar(ArrayList<String> searchable) {
 //        return new HBox();
 //    }
@@ -411,7 +416,7 @@ public class C482Project extends Application {
         nameLabel.setMinWidth(100);
         nameLabel.setMaxWidth(100);
         TextField nameText = new TextField();
-        nameText.setPromptText("Name");
+        nameText.setPromptText("Part Name");
         HBox nameBox = new HBox(nameLabel, nameText);
 
         Label invLabel = new Label("Inv");
@@ -614,7 +619,7 @@ public class C482Project extends Application {
 
         // Checks if adding or modifying
         boolean newProd = prodID == 0;
-        ArrayList<Part> unAddedParts = new ArrayList<Part>(inv.getAllParts());
+        ArrayList<Part> unAddedParts = new ArrayList<>(inv.getAllParts());
 //        unAddedParts.addAll(inv.getAllParts());
         ArrayList<Part> addedParts = new ArrayList<>();
 
@@ -648,7 +653,7 @@ public class C482Project extends Application {
         nameLabel.setMinWidth(100);
         nameLabel.setMaxWidth(100);
         TextField nameText = new TextField();
-        nameText.setPromptText("Name");
+        nameText.setPromptText("Product Name");
         HBox nameBox = new HBox(nameLabel, nameText);
 
         Label invLabel = new Label("Inv");
@@ -715,14 +720,27 @@ public class C482Project extends Application {
             ArrayList<Part> searchedParts = new ArrayList<>();
             for (int i = 0; i < inv.getAllParts().size(); i++) {
                 Part part = inv.getAllParts().get(i);
-                if (part.getName().toLowerCase().contains(partsSearchText.getText().toLowerCase())) {
+                if (part.getName().toLowerCase().contains(partsSearchText.getText().toLowerCase()) && !addedParts.contains(part)) {
                     searchedParts.add(part);
-//                    System.out.println(part.getName());
                 }
             }
 
             partsTable1final.setItems(getParts(searchedParts));
             partsTable1final.getSelectionModel().selectFirst();
+        });
+        partsSearchText.setOnKeyPressed(e -> {
+            if(e.getCode() == KeyCode.ENTER) {
+            ArrayList<Part> searchedParts = new ArrayList<>();
+            for (int i = 0; i < inv.getAllParts().size(); i++) {
+                Part part = inv.getAllParts().get(i);
+                if (part.getName().toLowerCase().contains(partsSearchText.getText().toLowerCase()) && !addedParts.contains(part)) {
+                    searchedParts.add(part);
+                }
+            }
+
+            partsTable1final.setItems(getParts(searchedParts));
+            partsTable1final.getSelectionModel().selectFirst();
+            }
         });
 
         HBox searchBox = new HBox();
