@@ -19,7 +19,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -29,7 +28,6 @@ import javafx.stage.Stage;
 public class C482Project extends Application {
     
     // TODO:
-    // Better layout
     // Validation & error handling
     // Testing
     // Cleanup
@@ -79,13 +77,13 @@ public class C482Project extends Application {
         inv.addProduct(new Product(associatedParts, 2, "Product 2", 2.99, 2, 1, 20));
         
         
-        primaryStage.setScene(mainScreenScene());
+//        primaryStage.setScene(mainScreenScene());
+        primaryStage.setScene(addProductScene(0));
         primaryStage.show();
     }
     
     static Scene mainScreenScene() {
         // TODO: Main menu
-        // Improve layout
         // Search box: Hitting enter searches field
         // Disable buttons when nothing is selected
         
@@ -290,7 +288,9 @@ public class C482Project extends Application {
         layout.setCenter(centerHBox);
     
     
-        Scene scene = new Scene(layout, 1000, 500);
+//        Scene scene = new Scene(layout, 1000, 500);
+        Scene scene = new Scene(layout);
+        layout.setPadding(new Insets(10, 20, 10, 20));
         
         return scene;
     }
@@ -399,6 +399,9 @@ public class C482Project extends Application {
 
         // Objects
         Label addPartLabel = new Label();
+        addPartLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        addPartLabel.setMinWidth(100);
+        addPartLabel.setMaxWidth(100);
         
         if (newPart) {
             addPartLabel.setText("Add Part");
@@ -418,34 +421,52 @@ public class C482Project extends Application {
         
         Label idLabel = new Label("ID");
         TextField idText = new TextField("Auto Gen - Disabled");
+        idLabel.setMinWidth(100);
+        idLabel.setMaxWidth(100);
         idText.setDisable(true);
         HBox idBox = new HBox(idLabel, idText);
         
         Label nameLabel = new Label("Name");
+        nameLabel.setMinWidth(100);
+        nameLabel.setMaxWidth(100);
         TextField nameText = new TextField();
         nameText.setPromptText("Name");
         HBox nameBox = new HBox(nameLabel, nameText);
         
         Label invLabel = new Label("Inv");
+        invLabel.setMinWidth(100);
+        invLabel.setMaxWidth(100);
         TextField invText = new TextField();
         invText.setPromptText("Inv");
         HBox invBox = new HBox(invLabel, invText);
         
         Label priceLabel = new Label("Price/Cost");
+        priceLabel.setMinWidth(100);
+        priceLabel.setMaxWidth(100);
         TextField priceText = new TextField();
         priceText.setPromptText("Price/Cost");
         HBox priceBox = new HBox(priceLabel, priceText);
         
         Label maxLabel = new Label("Max");
+        maxLabel.setMinWidth(100);
+        maxLabel.setMaxWidth(100);
         TextField maxText = new TextField();
+        maxText.setMinWidth(100);
+        maxText.setMaxWidth(100);
         maxText.setPromptText("Max");
         
         Label minLabel = new Label("Min");
+        minLabel.setMinWidth(50);
+        minLabel.setMaxWidth(50);
         TextField minText = new TextField();
+        minText.setMinWidth(100);
+        minText.setMaxWidth(100);
         minText.setPromptText("Min");
         HBox minMaxBox = new HBox(maxLabel, maxText, minLabel, minText);
         
         Label distributorLabel = new Label("Machine ID");
+        distributorLabel.setMinWidth(100);
+        distributorLabel.setMaxWidth(100);
         
         TextField distributorText = new TextField();
         distributorText.setPromptText("Mach ID");
@@ -552,16 +573,41 @@ public class C482Project extends Application {
         // Setting up layout
         VBox layout = new VBox(radioBox, idBox, nameBox, invBox, priceBox, minMaxBox, distributorBox, saveCancelBox);
         
-        Scene scene = new Scene(layout, 600, 500);
+        radioBox.setSpacing(10);
+        radioBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        idBox.setSpacing(10);
+        idBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        nameBox.setSpacing(10);
+        nameBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        invBox.setSpacing(10);
+        invBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        priceBox.setSpacing(10);
+        priceBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        minMaxBox.setSpacing(10);
+        minMaxBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        distributorBox.setSpacing(10);
+        distributorBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        saveCancelBox.setSpacing(10);
+        saveCancelBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        layout.setPadding(new Insets(10, 20, 10, 20));
+        Scene scene = new Scene(layout);
         
         return scene;
     }
     
     static Scene addProductScene(int prodID) {
         
-        // Fixed: Fix bug: Modifying fields of a part doesn't reflect them in associated parts when modifying parts.
+        // FIXED: Fix bug: Modifying fields of a part doesn't reflect them in associated parts when modifying parts.
         // This is because they're saved as a different entity. I might need to use associated parts directly from the inventory
-        // Fixed: Fix bug: changing part distributor re-adds it to the product menu and makes duplicates
+        // FIXED: Fix bug: changing part distributor re-adds it to the product menu and makes duplicates
         
         // Checks if adding or modifying
         boolean newProd = prodID == 0;
@@ -579,6 +625,8 @@ public class C482Project extends Application {
 
         // Objects
         Label addProdLabel = new Label();
+        addProdLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        addProdLabel.setPadding(new Insets(5, 10, 5, 10));
         if (newProd) {
             addProdLabel.setText("Add Product");
         } else {
@@ -586,33 +634,48 @@ public class C482Project extends Application {
         }
         
         Label idLabel = new Label("ID");
+        idLabel.setMinWidth(100);
+        idLabel.setMaxWidth(100);
         TextField idText = new TextField("Auto Gen - Disabled");
-        GridPane.setConstraints(idText, 1, 1);
 //        idText.setPromptText("Auto Gen - Disabled");
         idText.setDisable(true);
         HBox idBox = new HBox(idLabel, idText);
         
         Label nameLabel = new Label("Name");
+        nameLabel.setMinWidth(100);
+        nameLabel.setMaxWidth(100);
         TextField nameText = new TextField();
         nameText.setPromptText("Name");
         HBox nameBox = new HBox(nameLabel, nameText);
         
         Label invLabel = new Label("Inv");
+        invLabel.setMinWidth(100);
+        invLabel.setMaxWidth(100);
         TextField invText = new TextField();
         invText.setPromptText("Inv");
         HBox invBox = new HBox(invLabel, invText);
         
         Label priceLabel = new Label("Price/Cost");
+        priceLabel.setMinWidth(100);
+        priceLabel.setMaxWidth(100);
         TextField priceText = new TextField();
         priceText.setPromptText("Price/Cost");
         HBox priceBox = new HBox(priceLabel, priceText);
         
         Label maxLabel = new Label("Max");
+        maxLabel.setMinWidth(100);
+        maxLabel.setMaxWidth(100);
         TextField maxText = new TextField();
+        maxText.setMinWidth(50);
+        maxText.setMaxWidth(50);
         maxText.setPromptText("Max");
         
         Label minLabel = new Label("Min");
+        minLabel.setMinWidth(50);
+        minLabel.setMaxWidth(50);
         TextField minText = new TextField();
+        minText.setMinWidth(50);
+        minText.setMaxWidth(50);
         minText.setPromptText("Min");
         HBox minMaxBox = new HBox(maxLabel, maxText, minLabel, minText);
         
@@ -655,14 +718,12 @@ public class C482Project extends Application {
                 }
             }
             
-            partsTable1final.setItems(getParts(unAddedParts));
+            partsTable1final.setItems(getParts(searchedParts));
             partsTable1final.getSelectionModel().selectFirst();
-            partsTable2final.setItems(getParts(addedParts));
-            partsTable2final.getSelectionModel().selectFirst();
         });
         
         HBox searchBox = new HBox();
-        searchBox.getChildren().addAll(addProdLabel, partsSearchText, partsSearchButton);
+        searchBox.getChildren().addAll(partsSearchButton, partsSearchText);
         
         
         
@@ -676,6 +737,7 @@ public class C482Project extends Application {
             Part part = partsTable1final.getSelectionModel().getSelectedItem();
             addedParts.add(part);
             unAddedParts.remove(unAddedParts.indexOf(part));
+            partsSearchText.setText(""); // Could be done better
             
             partsTable1final.setItems(getParts(unAddedParts));
             partsTable1final.getSelectionModel().selectFirst();
@@ -690,6 +752,7 @@ public class C482Project extends Application {
             Part part = partsTable2final.getSelectionModel().getSelectedItem();
             unAddedParts.add(part);
             addedParts.remove(addedParts.indexOf(part));
+            partsSearchText.setText(""); // Could be done better
             
             partsTable1final.setItems(getParts(unAddedParts));
             partsTable1final.getSelectionModel().selectFirst();
@@ -734,9 +797,9 @@ public class C482Project extends Application {
             } 
        });
         
-        HBox saveAndCancelBox = new HBox();
+        HBox saveCancelBox = new HBox();
         // TODO: Anchor to bottom right
-        saveAndCancelBox.getChildren().addAll(saveButton, cancelButton);
+        saveCancelBox.getChildren().addAll(saveButton, cancelButton);
         
 
         // If product already exists, populate fields
@@ -778,18 +841,42 @@ public class C482Project extends Application {
 
         
         
-        VBox productVBox = new VBox(idBox, nameBox, invBox, priceBox, minMaxBox);
+        VBox productVBox = new VBox(addProdLabel, idBox, nameBox, invBox, priceBox, minMaxBox);
         
         
         VBox partsVBox = new VBox();
         partsVBox.getChildren().addAll(searchBox);
         partsVBox.getChildren().addAll(partsTable1, addButton);
         partsVBox.getChildren().addAll(partsTable2, deleteButton);
-        partsVBox.getChildren().addAll(saveAndCancelBox);
+        partsVBox.getChildren().addAll(saveCancelBox);
         
         HBox layout = new HBox(productVBox, partsVBox);
         
-        Scene scene = new Scene(layout, 600, 500);
+        idBox.setSpacing(10);
+        idBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        nameBox.setSpacing(10);
+        nameBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        invBox.setSpacing(10);
+        invBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        priceBox.setSpacing(10);
+        priceBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        minMaxBox.setSpacing(10);
+        minMaxBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        
+        partsVBox.setSpacing(10);
+        partsVBox.setPadding(new Insets(5, 10, 5, 10));
+        
+        searchBox.setSpacing(10);
+        
+        saveCancelBox.setSpacing(10);
+        
+        layout.setPadding(new Insets(10, 20, 10, 20));
+        Scene scene = new Scene(layout);
         
         return scene;
     }
