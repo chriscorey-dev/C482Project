@@ -120,8 +120,7 @@ public class C482Project extends Application {
 //        });
         
         // Parts TavleView
-        // TODO: Make this a method to be able to reuse it.
-        TableView<Part> partsTable= new TableView<>();
+        TableView<Part> partsTable = createPartTableView(inv.getAllParts());
         
         // Parts search
         Button partsSearchButton = new Button("Search");
@@ -134,39 +133,13 @@ public class C482Project extends Application {
 //                System.out.println(part.getName().toLowerCase());
                 if (part.getName().toLowerCase().contains(partsSearchText.getText().toLowerCase())) {
                     searchedParts.add(part);
-                    System.out.println(part.getName());
+//                    System.out.println(part.getName());
                 }
             }
 //            getParts(searchedParts);
             partsTable.setItems(getParts(searchedParts));
             partsTable.getSelectionModel().selectFirst();
         });
-        
-        
-        // Parts TableView
-//        partsTable.setMaxHeight(150);
-        partsTable.setMinWidth(400);
-        
-        TableColumn<Part, Integer> idColumn = new TableColumn<>("Part ID");
-        idColumn.setMinWidth(50);
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
-        
-        TableColumn<Part, String> nameColumn = new TableColumn<>("Part Name");
-        nameColumn.setMinWidth(50);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        
-        TableColumn<Part, Integer> invColumn = new TableColumn<>("Inventory Level");
-        invColumn.setMinWidth(50);
-        invColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
-        
-        TableColumn<Part, Integer> priceColumn = new TableColumn<>("Price/Cost per Unit");
-        priceColumn.setMinWidth(50);
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-        
-        partsTable.setItems(getParts(inv.getAllParts()));
-        partsTable.getSelectionModel().selectFirst();
-        partsTable.getColumns().addAll(idColumn, nameColumn, invColumn, priceColumn);
-        
         // Part buttons
         Button addPartButton = new Button("Add");
         addPartButton.setOnAction(e -> primaryStage.setScene(addPartScene(0)));
@@ -197,7 +170,7 @@ public class C482Project extends Application {
         prodsSearchText.setPromptText("Search...");
         
         // Products TableView
-        TableView<Product> prodsTable= new TableView<>();
+        TableView<Product> prodsTable = createProductTableView(inv.getAllProducts());
         
         Button prodsSearchButton = new Button("Search");
         prodsSearchButton.setOnAction(e -> {
@@ -206,38 +179,12 @@ public class C482Project extends Application {
                 Product product = inv.getAllProducts().get(i);
                 if (product.getName().toLowerCase().contains(prodsSearchText.getText().toLowerCase())) {
                     searchedProds.add(product);
-                    System.out.println(product.getName());
+//                    System.out.println(product.getName());
                 }
             }
             prodsTable.setItems(getProducts(searchedProds));
             prodsTable.getSelectionModel().selectFirst();
         });
-        
-        
-        // Products TableView
-//        prodsTable.setMaxHeight(150);
-        prodsTable.setMinWidth(400);
-        
-        TableColumn<Product, Integer> prodIdColumn = new TableColumn<>("Product ID");
-        prodIdColumn.setMinWidth(50);
-        prodIdColumn.setCellValueFactory(new PropertyValueFactory<>("productID"));
-        
-        TableColumn<Product, String> prodNameColumn = new TableColumn<>("Product Name");
-        prodNameColumn.setMinWidth(50);
-        prodNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        
-        TableColumn<Product, Integer> prodInvColumn = new TableColumn<>("Inventory Level");
-        prodInvColumn.setMinWidth(50);
-        prodInvColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
-        
-        TableColumn<Product, Integer> prodPriceColumn = new TableColumn<>("Price per Unit");
-        prodPriceColumn.setMinWidth(50);
-        prodPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-        
-        prodsTable.setItems(getProducts(inv.getAllProducts()));
-        prodsTable.getSelectionModel().selectFirst();
-        prodsTable.getColumns().addAll(prodIdColumn, prodNameColumn, prodInvColumn, prodPriceColumn);
-        
         
         // Product buttons
         Button addProdButton = new Button("Add");
@@ -250,7 +197,8 @@ public class C482Project extends Application {
             prodsTable.getSelectionModel().selectFirst();
         });
 
-        Button deleteProdButton = new Button("Delete");        deleteProdButton.setOnAction(e -> {
+        Button deleteProdButton = new Button("Delete");
+        deleteProdButton.setOnAction(e -> {
             Product selectedProd = prodsTable.getSelectionModel().getSelectedItem();
             // TODO: Shoudn't be able to delete or modify if there are no products
             if (ConfirmationBox.display("Are you sure you want to delete this product: " + selectedProd.getName())) {
@@ -341,6 +289,73 @@ public class C482Project extends Application {
         Scene scene = new Scene(layout, 1000, 500);
         
         return scene;
+    }
+    
+//    static private HBox searchBar(ArrayList<String> searchable) {
+//        return new HBox();
+//    }
+    
+//    static private TableView createPartTableView(ArrayList<Part> includedItems) {
+    static private TableView createPartTableView(ArrayList<Part> items) {
+//        ArrayList<Part> items = new ArrayList<Part>();
+//        items.addAll(includedItems);
+        
+        TableView<Part> partsTable = new TableView<>();
+        
+        
+        // Parts TableView
+//        partsTable.setMaxHeight(150);
+        partsTable.setMinWidth(400);
+        
+        TableColumn<Part, Integer> idColumn = new TableColumn<>("Part ID");
+        idColumn.setMinWidth(50);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("partID"));
+        
+        TableColumn<Part, String> nameColumn = new TableColumn<>("Part Name");
+        nameColumn.setMinWidth(50);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        
+        TableColumn<Part, Integer> invColumn = new TableColumn<>("Inventory Level");
+        invColumn.setMinWidth(50);
+        invColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
+        
+        TableColumn<Part, Integer> priceColumn = new TableColumn<>("Price/Cost per Unit");
+        priceColumn.setMinWidth(50);
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        
+        partsTable.setItems(getParts(items));
+        partsTable.getSelectionModel().selectFirst();
+        partsTable.getColumns().addAll(idColumn, nameColumn, invColumn, priceColumn);
+        
+        return partsTable;
+    }
+    
+    static private TableView createProductTableView(ArrayList<Product> items) {
+        
+        TableView<Product> prodsTable = new TableView<>();
+        prodsTable.setMinWidth(400);
+        
+        TableColumn<Product, Integer> prodIdColumn = new TableColumn<>("Product ID");
+        prodIdColumn.setMinWidth(50);
+        prodIdColumn.setCellValueFactory(new PropertyValueFactory<>("productID"));
+        
+        TableColumn<Product, String> prodNameColumn = new TableColumn<>("Product Name");
+        prodNameColumn.setMinWidth(50);
+        prodNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        
+        TableColumn<Product, Integer> prodInvColumn = new TableColumn<>("Inventory Level");
+        prodInvColumn.setMinWidth(50);
+        prodInvColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
+        
+        TableColumn<Product, Integer> prodPriceColumn = new TableColumn<>("Price per Unit");
+        prodPriceColumn.setMinWidth(50);
+        prodPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        
+        prodsTable.setItems(getProducts(items));
+        prodsTable.getSelectionModel().selectFirst();
+        prodsTable.getColumns().addAll(prodIdColumn, prodNameColumn, prodInvColumn, prodPriceColumn);
+        
+        return prodsTable;
     }
     
     
@@ -510,7 +525,11 @@ public class C482Project extends Application {
         
         Button cancelButton = new Button("Cancel");
         GridPane.setConstraints(cancelButton, 1, 7);
-        cancelButton.setOnAction(e -> primaryStage.setScene(mainScreenScene()));
+        cancelButton.setOnAction(e -> {
+            if (ConfirmationBox.display("Are you sure you want to cancel?")) {
+                primaryStage.setScene(mainScreenScene());
+            }
+        });
         
 
         // If part already exists, populate fields
@@ -553,87 +572,155 @@ public class C482Project extends Application {
         
         // Checks if adding or modifying
         boolean newProd = prodID == 0;
+        ArrayList<Part> unAddedParts = new ArrayList<Part>(inv.getAllParts());
+//        unAddedParts.addAll(inv.getAllParts());
+        ArrayList<Part> addedParts = new ArrayList<>();
+        
         if (newProd) {
             primaryStage.setTitle("C482 - Add Product");
         } else {
             primaryStage.setTitle("C482 - Modify Product");
         }
         
-        // Setting up layout
-        GridPane grid = new GridPane();
-        grid.setPadding(new Insets(10,10,10,10));
-        grid.setVgap(8);
-        grid.setHgap(10);
-        
 
 
         // Objects
-        
         Label addProdLabel = new Label();
         if (newProd) {
             addProdLabel.setText("Add Product");
         } else {
             addProdLabel.setText("Modify Product");
         }
-        GridPane.setConstraints(addProdLabel, 0, 0);
-//        addProdLabel.setScaleX(1.5);
-//        addProdLabel.setScaleY(1.5);
         
         Label idLabel = new Label("ID");
-        GridPane.setConstraints(idLabel, 0, 1);
         TextField idText = new TextField("Auto Gen - Disabled");
         GridPane.setConstraints(idText, 1, 1);
 //        idText.setPromptText("Auto Gen - Disabled");
         idText.setDisable(true);
+        HBox idBox = new HBox(idLabel, idText);
         
         Label nameLabel = new Label("Name");
-        GridPane.setConstraints(nameLabel, 0, 2);
         TextField nameText = new TextField();
-        GridPane.setConstraints(nameText, 1, 2);
         nameText.setPromptText("Name");
+        HBox nameBox = new HBox(nameLabel, nameText);
         
         Label invLabel = new Label("Inv");
-        GridPane.setConstraints(invLabel, 0, 3);
         TextField invText = new TextField();
-        GridPane.setConstraints(invText, 1, 3);
         invText.setPromptText("Inv");
+        HBox invBox = new HBox(invLabel, invText);
         
         Label priceLabel = new Label("Price/Cost");
-        GridPane.setConstraints(priceLabel, 0, 4);
         TextField priceText = new TextField();
-        GridPane.setConstraints(priceText, 1, 4);
         priceText.setPromptText("Price/Cost");
+        HBox priceBox = new HBox(priceLabel, priceText);
         
         Label maxLabel = new Label("Max");
-        GridPane.setConstraints(maxLabel, 0, 5);
         TextField maxText = new TextField();
-        GridPane.setConstraints(maxText, 1, 5);
         maxText.setPromptText("Max");
         
         Label minLabel = new Label("Min");
-        GridPane.setConstraints(minLabel, 2, 5);
         TextField minText = new TextField();
-        GridPane.setConstraints(minText, 3, 5);
         minText.setPromptText("Min");
+        HBox minMaxBox = new HBox(maxLabel, maxText, minLabel, minText);
         
+        
+        
+        TableView<Part> partsTable1 = createPartTableView(unAddedParts);
+        TableView<Part> partsTable2 = createPartTableView(addedParts);
+        
+        // TODO: Cleanup!
+        
+//        final TableView<Part> partsTable1final = createPartTableView(unAddedParts);
+//        final TableView<Part> partsTable2final = createPartTableView(addedParts);
+        final TableView<Part> partsTable1final = partsTable1;
+        final TableView<Part> partsTable2final = partsTable2;
+        
+        partsTable1.setItems(getParts(unAddedParts));
+        partsTable1.getSelectionModel().selectFirst();
+        partsTable2.setItems(getParts(addedParts));
+        partsTable2.getSelectionModel().selectFirst();
+        
+        partsTable1final.setItems(getParts(unAddedParts));
+        partsTable1final.getSelectionModel().selectFirst();
+        partsTable2final.setItems(getParts(addedParts));
+        partsTable2final.getSelectionModel().selectFirst();
+        
+        
+        
+        // Search bar
+        TextField partsSearchText = new TextField();
+        partsSearchText.setPromptText("Search...");
+        
+        Button partsSearchButton = new Button("Search");
+        partsSearchButton.setOnAction(e -> {
+            ArrayList<Part> searchedParts = new ArrayList<>();
+            for (int i = 0; i < inv.getAllParts().size(); i++) {
+                Part part = inv.getAllParts().get(i);
+                if (part.getName().toLowerCase().contains(partsSearchText.getText().toLowerCase())) {
+                    searchedParts.add(part);
+//                    System.out.println(part.getName());
+                }
+            }
+            
+            partsTable1final.setItems(getParts(unAddedParts));
+            partsTable1final.getSelectionModel().selectFirst();
+            partsTable2final.setItems(getParts(addedParts));
+            partsTable2final.getSelectionModel().selectFirst();
+        });
+        
+        HBox searchBox = new HBox();
+        searchBox.getChildren().addAll(partsSearchText, partsSearchButton);
+        
+        
+        
+        
+        
+        
+        
+        // Add and Delete buttons
+        Button addButton = new Button("Add");
+        addButton.setOnAction(e -> {
+            Part part = partsTable1final.getSelectionModel().getSelectedItem();
+            addedParts.add(part);
+            unAddedParts.remove(unAddedParts.indexOf(part));
+            
+            partsTable1final.setItems(getParts(unAddedParts));
+            partsTable1final.getSelectionModel().selectFirst();
+            partsTable2final.setItems(getParts(addedParts));
+            partsTable2final.getSelectionModel().selectFirst();
+        });
+        
+        Button deleteButton = new Button("Delete");
+        deleteButton.setOnAction(e -> {
+            Part part = partsTable2final.getSelectionModel().getSelectedItem();
+            unAddedParts.add(part);
+            addedParts.remove(addedParts.indexOf(part));
+            
+            partsTable1final.setItems(getParts(unAddedParts));
+            partsTable1final.getSelectionModel().selectFirst();
+            partsTable2final.setItems(getParts(addedParts));
+            partsTable2final.getSelectionModel().selectFirst();
+        });
+        
+        
+        
+        
+        // Save and Cancel buttons
         Button saveButton = new Button("Save");
-        GridPane.setConstraints(saveButton, 0, 7);
         saveButton.setOnAction(e -> {
-        // TODO: Proper validation
-        
-        // (ArrayList<Part> associatedParts, int productID, String name, double price, int inStock, int min, int max)
-        ArrayList<Part> associatedParts = new ArrayList<>();
-        associatedParts.add(inv.lookupPart(1));
-        associatedParts.add(inv.lookupPart(2));
-        
-        Product product = new Product(associatedParts, // TODO: Get associated parts working
-                                      prodID,
-                                      nameText.getText(),
-                                      Double.parseDouble(priceText.getText()),
-                                      Integer.parseInt(invText.getText()),
-                                      Integer.parseInt(minText.getText()),
-                                      Integer.parseInt(maxText.getText())
-                                    );
+            // TODO: Proper validation        
+            // (ArrayList<Part> associatedParts, int productID, String name, double price, int inStock, int min, int max)
+            ArrayList<Part> associatedParts = new ArrayList<>();
+
+            Product product = new Product(addedParts, // TODO: Get associated parts working
+                                          prodID,
+                                          nameText.getText(),
+                                          Double.parseDouble(priceText.getText()),
+                                          Integer.parseInt(invText.getText()),
+                                          Integer.parseInt(minText.getText()),
+                                          Integer.parseInt(maxText.getText())
+                                        );
+
             if (newProd) {
                 inv.addProduct(product);
             } else {
@@ -644,28 +731,57 @@ public class C482Project extends Application {
         
         
         Button cancelButton = new Button("Cancel");
-        GridPane.setConstraints(cancelButton, 1, 7);
-        cancelButton.setOnAction(e -> primaryStage.setScene(mainScreenScene()));
+        cancelButton.setOnAction(e -> {
+            if (ConfirmationBox.display("Are you sure you want to cancel?")) {
+                primaryStage.setScene(mainScreenScene());
+            } 
+       });
+        
+        HBox saveAndCancelBox = new HBox();
+        // TODO: Anchor to bottom right
+        saveAndCancelBox.getChildren().addAll(saveButton, cancelButton);
         
 
         // If product already exists, populate fields
         if (!newProd) {
             Product modProd = inv.lookupProduct(prodID);
-            System.out.println(modProd.getName());
+//            System.out.println(modProd.getName());
             idText.setText(Integer.toString(modProd.getProductID()));
             nameText.setText(modProd.getName());
             invText.setText(Integer.toString(modProd.getInStock()));
             priceText.setText(Double.toString(modProd.getPrice()));
             maxText.setText(Integer.toString(modProd.getMax()));
             minText.setText(Integer.toString(modProd.getMin()));
+            
+            unAddedParts.removeAll(unAddedParts);
+            unAddedParts.addAll(modProd.getUnassociatedParts(inv.getAllParts()));
+            addedParts.removeAll(addedParts);
+            addedParts.addAll(modProd.getAssociatedParts());
+            
+            TableView<Part> partsTable1Display = partsTable1;
+            TableView<Part> partsTable2Display = partsTable2;
+//            partsTableDisplay = createPartTableView(modProd.getUnassociatedParts(inv.getAllParts()));
+//            TableView<Part> partsTable2Display = createPartTableView(modProd.getAssociatedParts());
+            partsTable1Display.setItems(getParts(unAddedParts));
+            partsTable1Display.getSelectionModel().selectFirst();
+            partsTable2Display.setItems(getParts(addedParts));
+            partsTable2Display.getSelectionModel().selectFirst();
         }
 
-        // Adding objects to layout, and layout to scene
-        grid.getChildren().addAll(addProdLabel, idLabel, nameLabel, invLabel, priceLabel, maxLabel, minLabel);
-        grid.getChildren().addAll(idText, nameText, invText, priceText, maxText, minText);
-        grid.getChildren().addAll(saveButton, cancelButton);
         
-        Scene scene = new Scene(grid, 600, 500);
+        
+        VBox productVBox = new VBox(idBox, nameBox, invBox, priceBox, minMaxBox);
+        
+        
+        VBox partsVBox = new VBox();
+        partsVBox.getChildren().addAll(searchBox);
+        partsVBox.getChildren().addAll(partsTable1, addButton);
+        partsVBox.getChildren().addAll(partsTable2, deleteButton);
+        partsVBox.getChildren().addAll(saveAndCancelBox);
+        
+        HBox layout = new HBox(productVBox, partsVBox);
+        
+        Scene scene = new Scene(layout, 600, 500);
         
         return scene;
     }

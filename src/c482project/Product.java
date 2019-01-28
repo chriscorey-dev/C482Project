@@ -23,18 +23,52 @@ public class Product {
 //        this.productID = productID;
 //    }
     
+    public ArrayList<Part> getAssociatedParts() {
+        return associatedParts;
+    }
+    
+    public ArrayList<Part> getUnassociatedParts(ArrayList<Part> allParts) {
+//        ArrayList<Part> unassociatedParts = allParts;
+//        for (int i = 0; i < associatedParts.size(); i++) {
+//            unassociatedParts.remove(associatedParts.get(i));
+//        }
+//        return unassociatedParts;
+//        return associatedParts;
+
+        ArrayList<Part> unassociatedParts = new ArrayList<>(); //.add(allParts); // = allParts;
+        unassociatedParts.addAll(allParts);
+        unassociatedParts.removeAll(associatedParts);
+        return unassociatedParts;
+    }
+    
+    // Custom
+    public void setAssociatedParts(ArrayList<Part> associatedParts) {
+        this.associatedParts = associatedParts;
+    }
+    
+    // Custom
     public void addAssociatedPart(Part part) {
         associatedParts.add(part);
     }
 
-    public Part lookupAssociatedParts(int partID) {
+    public Part lookupAssociatedPart(int partID) {
         // Consider using inv.products.get(partID)
-        for (int i = 0; i < associatedParts.size() - 1; i++) {
+        for (int i = 0; i < associatedParts.size(); i++) {
             if (associatedParts.get(i).getPartID() == partID) {
                 return associatedParts.get(i);
             }
         }
         return null;
+    }
+    
+    public boolean removeAssociatedPart(int partID) {
+        for (int i = 0; i < associatedParts.size(); i++) {
+            if (associatedParts.get(i).getPartID() == partID) {
+                associatedParts.remove(i);
+                return true;
+            }
+        }
+        return false;
     }
 
     public int getProductID() {

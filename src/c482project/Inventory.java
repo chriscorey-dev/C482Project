@@ -65,6 +65,7 @@ public class Inventory {
         Product oldProd = lookupProduct(newProd.getProductID());
         if (oldProd == null) {return;}
         
+        oldProd.setAssociatedParts(newProd.getAssociatedParts());
         oldProd.setName(newProd.getName());
         oldProd.setPrice(newProd.getPrice());
         oldProd.setInStock(newProd.getInStock());
@@ -83,7 +84,15 @@ public class Inventory {
     }
     
     public boolean deletePart(Part part) {
-        // Validation
+        // TODO: Validation
+        // TODO: Delete product's associatedPart
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            if (product.getAssociatedParts().contains(part)) {
+                product.removeAssociatedPart(part.getPartID());
+            }
+        }
+        
         return allParts.remove(part);
     }
     
