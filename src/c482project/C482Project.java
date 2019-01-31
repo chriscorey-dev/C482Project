@@ -41,7 +41,8 @@ public class C482Project extends Application {
 
         // TEST 01
         inv.addPart(new Inhouse(5, 1, "Engine", 499.99, 1, 1, 5));
-        inv.addPart(new Outsourced("Company 1", 2, "Tire", 29.99, 4, 1, 8));
+        inv.addPart(new Outsourced("Big Tire Company", 2, "Tire", 29.99, 4, 1, 8));
+        inv.addPart(new Inhouse(7, 3, "Handlebars", 49.99, 2, 1, 5));
 
 
         // TEST 02
@@ -52,10 +53,19 @@ public class C482Project extends Application {
         associatedParts.add(inv.lookupPart(2));
         associatedParts.add(inv.lookupPart(2));
         inv.addProduct(new Product(associatedParts, 1, "Car", 999.99, 4, 1, 10));
+        
         associatedParts = new ArrayList();
+        associatedParts.add(inv.lookupPart(3));
         associatedParts.add(inv.lookupPart(2));
         associatedParts.add(inv.lookupPart(2));
-        inv.addProduct(new Product(associatedParts, 2, "Bicycle", 99.99, 2, 1, 20));
+        inv.addProduct(new Product(associatedParts, 2, "Bicycle", 149.99, 2, 1, 20));
+        
+        associatedParts = new ArrayList();
+        associatedParts.add(inv.lookupPart(1));
+        associatedParts.add(inv.lookupPart(3));
+        associatedParts.add(inv.lookupPart(2));
+        associatedParts.add(inv.lookupPart(2));
+        inv.addProduct(new Product(associatedParts, 2, "Motorcycle", 799.99, 6, 1, 10));
 
 
         primaryStage.setScene(mainScreenScene());
@@ -68,7 +78,6 @@ public class C482Project extends Application {
         // Setting up layout
 
         Label titleLabel = new Label("Inventory Management System");
-//        Text titleText = new Text("Inventory Management System");
         titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
 
 
@@ -153,7 +162,6 @@ public class C482Project extends Application {
                 Product product = inv.getAllProducts().get(i);
                 if (product.getName().toLowerCase().contains(prodsSearchText.getText().toLowerCase())) {
                     searchedProds.add(product);
-//                    System.out.println(product.getName());
                 }
             }
             prodsTable.setItems(getProducts(searchedProds));
@@ -189,8 +197,11 @@ public class C482Project extends Application {
         Button deleteProdButton = new Button("Delete");
         deleteProdButton.setOnAction(e -> {
             Product selectedProd = prodsTable.getSelectionModel().getSelectedItem();
+//            // If they make a stink about having products with 0 associated parts...
+//            if (!selectedProd.getAssociatedParts().isEmpty()) {
+//                return;
+//            }
             if (ConfirmationBox.display("Are you sure you want to delete this product: " + selectedProd.getName())) {
-//                inv.removeProduct(selectedProd.getProductID());
                 inv.deleteProduct(selectedProd);
                 prodsTable.setItems(getProducts(inv.getAllProducts()));
                 prodsTable.getSelectionModel().selectFirst();
@@ -209,7 +220,6 @@ public class C482Project extends Application {
 
 
         VBox partsVBox = new VBox();
-//        partsVBox.setStyle("-fx-border-color: black");
 
         HBox partsHBox1 = new HBox();
         HBox partsHBox2 = new HBox();
@@ -229,7 +239,6 @@ public class C482Project extends Application {
 
 
         VBox prodsVBox = new VBox();
-//        prodsVBox.setStyle("-fx-border-color: black");
 
         HBox prodsHBox1 = new HBox();
         HBox prodsHBox2 = new HBox();
@@ -311,7 +320,7 @@ public class C482Project extends Application {
         invColumn.setMinWidth(50);
         invColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
 
-        TableColumn<Part, Integer> priceColumn = new TableColumn<>("Price/Cost per Unit");
+        TableColumn<Part, Double> priceColumn = new TableColumn<>("Price/Cost per Unit");
         priceColumn.setMinWidth(50);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
 
@@ -340,7 +349,7 @@ public class C482Project extends Application {
         prodInvColumn.setMinWidth(50);
         prodInvColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
 
-        TableColumn<Product, Integer> prodPriceColumn = new TableColumn<>("Price per Unit");
+        TableColumn<Product, Double> prodPriceColumn = new TableColumn<>("Price per Unit");
         prodPriceColumn.setMinWidth(50);
         prodPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
 
@@ -352,20 +361,15 @@ public class C482Project extends Application {
     }
 
 
-    // TEMP: maybe. Refreshes list view
     static ObservableList<Part> getParts(ArrayList<Part> parts) {
-        // ObservableList
         ObservableList<Part> observableParts = FXCollections.observableArrayList();
         observableParts.removeAll();
-//        parts.addAll(inv.getAllParts());
         observableParts.addAll(parts);
         return observableParts;
     }
 
 
-    // TEMP: maybe. Refreshes list view
     static ObservableList<Product> getProducts(ArrayList<Product> products) {
-        // ObservableList
         ObservableList<Product> prods = FXCollections.observableArrayList();
         prods.removeAll();
         prods.addAll(products);
@@ -945,12 +949,12 @@ public class C482Project extends Application {
                 invValue = Integer.parseInt(invText.getText());
                 invValueValidated = true;
 
-                if(invValue <= 0) {
-                    errors.add("Inventory field must be a number greater than 0");
+                if(invValue < 0) {
+                    errors.add("Inventory field must be a number, 0 or greater");
                     invValueValidated = false;
                 }
             } catch(Exception e) {
-                errors.add("Inventory field must be a number greater than 0");
+                errors.add("Inventory field must be a number, 0 or greater");
                 invValueValidated = false;
             }
         }
@@ -966,12 +970,12 @@ public class C482Project extends Application {
                 minValue = Integer.parseInt(minText.getText());
                 minValueValidated = true;
 
-                if(minValue <= 0) {
-                    errors.add("Min field must be a number greater than 0");
+                if(minValue < 0) {
+                    errors.add("Min field must be a number, 0 or greater");
                     minValueValidated = false;
                 }
             } catch(Exception e) {
-                errors.add("Min field must be a number greater than 0");
+                errors.add("Min field must be a number, 0 or greater");
                 minValueValidated = false;
             }
         }
@@ -987,12 +991,12 @@ public class C482Project extends Application {
                 maxValue = Integer.parseInt(maxText.getText());
                 maxValueValidated = true;
 
-                if(maxValue <= 0) {
-                    errors.add("Max field must be a number greater than 0");
+                if(maxValue < 0) {
+                    errors.add("Max field must be a number, 0 or greater");
                     maxValueValidated = false;
                 }
             } catch(Exception e) {
-                errors.add("Max field must be a number greater than 0");
+                errors.add("Max field must be a number, 0 or greater");
                 maxValueValidated = false;
             }
         }
@@ -1069,6 +1073,7 @@ public class C482Project extends Application {
             errors.add("Name field cannot be empty");
         }
 
+        // Might need to fix this
         int invValue = -1;
         boolean invValueValidated = true;
         if (invText.getText().isEmpty()) {
@@ -1080,12 +1085,12 @@ public class C482Project extends Application {
                 invValue = Integer.parseInt(invText.getText());
                 invValueValidated = true;
 
-                if(invValue <= 0) {
-                    errors.add("Inventory field must be a number greater than 0");
+                if(invValue < 0) {
+                    errors.add("Inventory field must be a number, 0 or greater");
                     invValueValidated = false;
                 }
             } catch(Exception e) {
-                errors.add("Inventory field must be a number greater than 0");
+                errors.add("Inventory field must be a number, 0 or greater");
                 invValueValidated = false;
             }
         }
@@ -1101,12 +1106,12 @@ public class C482Project extends Application {
                 minValue = Integer.parseInt(minText.getText());
                 minValueValidated = true;
 
-                if(minValue <= 0) {
-                    errors.add("Min field must be a number greater than 0");
+                if(minValue < 0) {
+                    errors.add("Min field must be a number, 0 or greater");
                     minValueValidated = false;
                 }
             } catch(Exception e) {
-                errors.add("Min field must be a number greater than 0");
+                errors.add("Min field must be a number, 0 or greater");
                 minValueValidated = false;
             }
         }
@@ -1122,12 +1127,12 @@ public class C482Project extends Application {
                 maxValue = Integer.parseInt(maxText.getText());
                 maxValueValidated = true;
 
-                if(maxValue <= 0) {
-                    errors.add("Max field must be a number greater than 0");
+                if(maxValue < 0) {
+                    errors.add("Max field must be a number, 0 or greater");
                     maxValueValidated = false;
                 }
             } catch(Exception e) {
-                errors.add("Max field must be a number greater than 0");
+                errors.add("Max field must be a number, 0 or greater");
                 maxValueValidated = false;
             }
         }

@@ -58,15 +58,7 @@ public class Inventory {
     }
     
     public void modifyProduct(Product newProd) {
-        Product oldProd = lookupProduct(newProd.getProductID());
-        if (oldProd == null) {return;}
-        
-        oldProd.setAssociatedParts(newProd.getAssociatedParts());
-        oldProd.setName(newProd.getName());
-        oldProd.setPrice(newProd.getPrice());
-        oldProd.setInStock(newProd.getInStock());
-        oldProd.setMin(newProd.getMin());
-        oldProd.setMax(newProd.getMax());
+        products.set(products.indexOf(lookupProduct(newProd.getProductID())), newProd);
     }
     
     public void addPart(Part part) {
@@ -79,8 +71,6 @@ public class Inventory {
     }
     
     public boolean deletePart(Part part) {
-        // TODO: Validation
-        // TODO: Delete product's associatedPart
         for (int i = 0; i < products.size(); i++) {
             Product product = products.get(i);
             if (product.getAssociatedParts().contains(part)) {
@@ -106,11 +96,6 @@ public class Inventory {
     }
     
     public void modifyPart(Part newPart) {
-        for (int i = 0; i < products.size(); i++) {
-            if (products.get(i).lookupAssociatedPart(newPart.getPartID()) == newPart) {
-                System.out.println("part found");
-            }
-        }
         allParts.set(allParts.indexOf(lookupPart(newPart.getPartID())), newPart);
     }
     
