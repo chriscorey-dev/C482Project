@@ -47,8 +47,12 @@ public class C482Project extends Application {
         ArrayList<Part> associatedParts = new ArrayList<>();
         associatedParts.add(inv.lookupPart(1));
         associatedParts.add(inv.lookupPart(2));
+        associatedParts.add(inv.lookupPart(2));
+        associatedParts.add(inv.lookupPart(2));
+        associatedParts.add(inv.lookupPart(2));
         inv.addProduct(new Product(associatedParts, 1, "Car", 999.99, 4, 1, 10));
         associatedParts = new ArrayList();
+        associatedParts.add(inv.lookupPart(2));
         associatedParts.add(inv.lookupPart(2));
         inv.addProduct(new Product(associatedParts, 2, "Bicycle", 99.99, 2, 1, 20));
 
@@ -528,6 +532,37 @@ public class C482Project extends Application {
                         Integer.parseInt(maxText.getText())
                 );
             }
+            
+            // Checks if part is already an associated part. If it is, checks if the new price is less than product's price. If it isn't print validation message
+            if (!newPart) {
+                ArrayList<Product> associatedProducts = inv.lookupProductsWithPart(inv.lookupPart(partID));
+                
+                for (int i = 0; i < associatedProducts.size(); i++) {
+                    Product associatedProduct = associatedProducts.get(i);
+                    double productPriceSum = 0.;
+                    ArrayList<Part> parts = new ArrayList<>();
+                    
+                    for (int j = 0; j < associatedProduct.getAssociatedParts().size(); j++) {
+                        Part currPart = associatedProduct.getAssociatedParts().get(j);
+                        if (currPart.getPartID() == partID)
+                        {
+                            productPriceSum += part.getPrice();
+                            parts.add(part);
+                        } else {
+                            productPriceSum += currPart.getPrice();
+                            parts.add(currPart);
+                        }
+                    }
+                    
+                    if (productPriceSum > associatedProduct.getPrice()) {
+                        validationBox.getChildren().add(new Label("• Products must be a higher price than the combined price of its associated parts.\n      - Problem Product: " + associatedProduct.getName() + "\n      - Product Current Price: " + associatedProduct.getPrice() + "\n      - Product's Associated Parts' Price: >" + productPriceSum));
+                        primaryStage.sizeToScene();
+//                       // The Price field must be more than the\nsum of the combined associated parts price,\nwhich is " + priceSum
+                        return;
+                    }
+                    associatedProduct.setAssociatedParts(parts);
+                }
+            }
 
             if (newPart) {
                 inv.addPart(part);
@@ -616,11 +651,12 @@ public class C482Project extends Application {
         // FIXED: Fix bug: Modifying fields of a part doesn't reflect them in associated parts when modifying parts.
         // This is because they're saved as a different entity. I might need to use associated parts directly from the inventory
         // FIXED: Fix bug: changing part distributor re-adds it to the product menu and makes duplicates
+        
+        // TODO: In modifying part, ensure that the new price doesn't exceen any product's associated parts' price
+        // FIXED: In modifying product, accurately reflect any modified part's fields
 
         // Checks if adding or modifying
         boolean newProd = prodID == 0;
-        ArrayList<Part> unAddedParts = new ArrayList<>(inv.getAllParts());
-//        unAddedParts.addAll(inv.getAllParts());
         ArrayList<Part> addedParts = new ArrayList<>();
 
         if (newProd) {
@@ -689,23 +725,17 @@ public class C482Project extends Application {
 
 
 
-        TableView<Part> partsTable1 = createPartTableView(unAddedParts);
+        TableView<Part> partsTable1 = createPartTableView(inv.getAllParts());
         TableView<Part> partsTable2 = createPartTableView(addedParts);
 
         // TODO: Cleanup!
 
-//        final TableView<Part> partsTable1final = createPartTableView(unAddedParts);
-//        final TableView<Part> partsTable2final = createPartTableView(addedParts);
         final TableView<Part> partsTable1final = partsTable1;
         final TableView<Part> partsTable2final = partsTable2;
 
-        partsTable1.setItems(getParts(unAddedParts));
-        partsTable1.getSelectionModel().selectFirst();
         partsTable2.setItems(getParts(addedParts));
         partsTable2.getSelectionModel().selectFirst();
 
-        partsTable1final.setItems(getParts(unAddedParts));
-        partsTable1final.getSelectionModel().selectFirst();
         partsTable2final.setItems(getParts(addedParts));
         partsTable2final.getSelectionModel().selectFirst();
 
@@ -757,26 +787,15 @@ public class C482Project extends Application {
         addButton.setOnAction(e -> {
             Part part = partsTable1final.getSelectionModel().getSelectedItem();
             addedParts.add(part);
-            unAddedParts.remove(unAddedParts.indexOf(part));
-            partsSearchText.setText(""); // Could be done better
-
-            partsTable1final.setItems(getParts(unAddedParts));
-            partsTable1final.getSelectionModel().selectFirst();
             partsTable2final.setItems(getParts(addedParts));
             partsTable2final.getSelectionModel().selectFirst();
         });
-        partsTable1final.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> addButton.setDisable(partsTable1final.getItems().isEmpty()));
-        addButton.setDisable(partsTable1final.getItems().isEmpty());
 
         Button deleteButton = new Button("Delete");
         deleteButton.setOnAction(e -> {
             Part part = partsTable2final.getSelectionModel().getSelectedItem();
-            unAddedParts.add(part);
             addedParts.remove(addedParts.indexOf(part));
-            partsSearchText.setText(""); // Could be done better
 
-            partsTable1final.setItems(getParts(unAddedParts));
-            partsTable1final.getSelectionModel().selectFirst();
             partsTable2final.setItems(getParts(addedParts));
             partsTable2final.getSelectionModel().selectFirst();
         });
@@ -854,28 +873,14 @@ public class C482Project extends Application {
             maxText.setText(Integer.toString(modProd.getMax()));
             minText.setText(Integer.toString(modProd.getMin()));
 
-//            unAddedParts.removeAll(unAddedParts);
-//            unAddedParts.addAll(modProd.getUnassociatedParts(inv.getAllParts()));
-//            addedParts.removeAll(addedParts);
-//            addedParts.addAll(modProd.getAssociatedParts());
-
-            addedParts.clear();
-            for (int i = 0; i < inv.getAllParts().size(); i++) {
-                Part part = inv.getAllParts().get(i);
-                if (modProd.lookupAssociatedPart(part.getPartID()) != null) {
-                    addedParts.add(part);
-                }
-            }
-            unAddedParts.clear();
-            unAddedParts.addAll(inv.getAllParts());
-            unAddedParts.removeAll(addedParts);
-
-            TableView<Part> partsTable1Display = partsTable1;
+            addedParts.addAll(modProd.getAssociatedParts());
             TableView<Part> partsTable2Display = partsTable2;
-//            partsTableDisplay = createPartTableView(modProd.getUnassociatedParts(inv.getAllParts()));
-//            TableView<Part> partsTable2Display = createPartTableView(modProd.getAssociatedParts());
-            partsTable1Display.setItems(getParts(unAddedParts));
-            partsTable1Display.getSelectionModel().selectFirst();
+            
+            // Updates lower part list with any updated values
+            for (int i = 0; i < addedParts.size(); i++) {
+                addedParts.set(i, inv.lookupPart(addedParts.get(i).getPartID()));
+            }
+            
             partsTable2Display.setItems(getParts(addedParts));
             partsTable2Display.getSelectionModel().selectFirst();
         }

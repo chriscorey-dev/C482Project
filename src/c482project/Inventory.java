@@ -118,14 +118,19 @@ public class Inventory {
             }
         }
         allParts.set(allParts.indexOf(lookupPart(newPart.getPartID())), newPart);
+    }
+    
+    // Returns any product with specified part
+    public ArrayList<Product> lookupProductsWithPart(Part part) {
+        ArrayList<Product> productsWithPart = new ArrayList<>();
         
-//        Part oldPart = lookupPart(newPart.getPartID());
-//        if (oldPart == null) {return;}
-//        
-//        oldPart.setName(newPart.getName());
-//        oldPart.setPrice(newPart.getPrice());
-//        oldPart.setInStock(newPart.getInStock());
-//        oldPart.setMin(newPart.getMin());
-//        oldPart.setMax(newPart.getMax());
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            if (product.getAssociatedParts().contains(part)) {
+                productsWithPart.add(product);
+            }
+        }
+        
+        return productsWithPart;
     }
 }
