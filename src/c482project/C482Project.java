@@ -1,5 +1,6 @@
 package c482project;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -62,10 +63,6 @@ public class C482Project extends Application {
     }
 
     static Scene mainScreenScene() {
-        // TODO: Main menu
-        // Search box: Hitting enter searches field
-        // Disable buttons when nothing is selected
-
         primaryStage.setTitle("C482 - Main Menu");
 
         // Setting up layout
@@ -555,9 +552,9 @@ public class C482Project extends Application {
                     }
                     
                     if (productPriceSum > associatedProduct.getPrice()) {
-                        validationBox.getChildren().add(new Label("• Products must be a higher price than the combined price of its associated parts.\n      - Problem Product: " + associatedProduct.getName() + "\n      - Product Current Price: " + associatedProduct.getPrice() + "\n      - Product's Associated Parts' Price: >" + productPriceSum));
+                        DecimalFormat df = new DecimalFormat("#.##");
+                        validationBox.getChildren().add(new Label("• Products must be a higher price than the combined price of its associated parts.\n      - Problem Product: " + associatedProduct.getName() + "\n      - Product Current Price: " + associatedProduct.getPrice() + "\n      - Product's Associated Parts Price: >" + df.format(productPriceSum)));
                         primaryStage.sizeToScene();
-//                       // The Price field must be more than the\nsum of the combined associated parts price,\nwhich is " + priceSum
                         return;
                     }
                     associatedProduct.setAssociatedParts(parts);
@@ -652,7 +649,7 @@ public class C482Project extends Application {
         // This is because they're saved as a different entity. I might need to use associated parts directly from the inventory
         // FIXED: Fix bug: changing part distributor re-adds it to the product menu and makes duplicates
         
-        // TODO: In modifying part, ensure that the new price doesn't exceen any product's associated parts' price
+        // Fixed: In modifying part, ensure that the new price doesn't exceen any product's associated parts' price
         // FIXED: In modifying product, accurately reflect any modified part's fields
 
         // Checks if adding or modifying
@@ -681,7 +678,6 @@ public class C482Project extends Application {
         idLabel.setMinWidth(100);
         idLabel.setMaxWidth(100);
         TextField idText = new TextField("Auto Gen - Disabled");
-//        idText.setPromptText("Auto Gen - Disabled");
         idText.setDisable(true);
         HBox idBox = new HBox(idLabel, idText);
 
@@ -727,8 +723,6 @@ public class C482Project extends Application {
 
         TableView<Part> partsTable1 = createPartTableView(inv.getAllParts());
         TableView<Part> partsTable2 = createPartTableView(addedParts);
-
-        // TODO: Cleanup!
 
         final TableView<Part> partsTable1final = partsTable1;
         final TableView<Part> partsTable2final = partsTable2;
@@ -832,7 +826,7 @@ public class C482Project extends Application {
             
             ArrayList<Part> associatedParts = new ArrayList<>();
 
-            Product product = new Product(addedParts, // TODO: Get associated parts working
+            Product product = new Product(addedParts,
                                           prodID,
                                           nameText.getText(),
                                           Double.parseDouble(priceText.getText()),
@@ -865,7 +859,6 @@ public class C482Project extends Application {
         // If product already exists, populate fields
         if (!newProd) {
             Product modProd = inv.lookupProduct(prodID);
-//            System.out.println(modProd.getName());
             idText.setText(Integer.toString(modProd.getProductID()));
             nameText.setText(modProd.getName());
             invText.setText(Integer.toString(modProd.getInStock()));
@@ -875,11 +868,6 @@ public class C482Project extends Application {
 
             addedParts.addAll(modProd.getAssociatedParts());
             TableView<Part> partsTable2Display = partsTable2;
-            
-            // Updates lower part list with any updated values
-            for (int i = 0; i < addedParts.size(); i++) {
-                addedParts.set(i, inv.lookupPart(addedParts.get(i).getPartID()));
-            }
             
             partsTable2Display.setItems(getParts(addedParts));
             partsTable2Display.getSelectionModel().selectFirst();
@@ -1014,13 +1002,12 @@ public class C482Project extends Application {
         if (invValueValidated && minValueValidated && maxValueValidated) {
             if (maxValue < minValue) {
                 errors.add("Max value must be more than Min field");
-            } else {
-                if (invValue > maxValue) {
-                    errors.add("Inventory field must be less than Max field");
-                }
-                if (invValue < minValue) {
-                    errors.add("Inventory field must be more than Min field");
-                }
+            }
+            if (invValue > maxValue) {
+                errors.add("Inventory field must be less than Max field");
+            }
+            if (invValue < minValue) {
+                errors.add("Inventory field must be more than Min field");
             }
         }
         
@@ -1060,9 +1047,6 @@ public class C482Project extends Application {
                 errors.add("Company Name field cannot be empty");
             }
         }
-
-
-
 
         return errors;
     }
@@ -1153,13 +1137,12 @@ public class C482Project extends Application {
         if (invValueValidated && minValueValidated && maxValueValidated) {
             if (maxValue < minValue) {
                 errors.add("Max value must be more than Min field");
-            } else {
-                if (invValue > maxValue) {
-                    errors.add("Inventory field must be less than Max field");
-                }
-                if (invValue < minValue) {
-                    errors.add("Inventory field must be more than Min field");
-                }
+            }
+            if (invValue > maxValue) {
+                errors.add("Inventory field must be less than Max field");
+            }
+            if (invValue < minValue) {
+                errors.add("Inventory field must be more than Min field");
             }
         }
         
@@ -1186,58 +1169,6 @@ public class C482Project extends Application {
             }
         }
 
-
-
-
         return errors;
-
-//        ArrayList<Part> associatedPartsValue = new ArrayList<>(); // size() < 0
-//        String nameValue = "Part 1"; // !null
-//        int invValue = 5; // !null, < maxValue, > minValue
-//        int minValue = 1; // !null, < maxValue
-//        int maxValue = 10; // !null, > minValue
-//        double priceValue = 99.99; // !null, > associatedParts.priceSum()
     }
-
-
-
-//    static Scene loginScene() {
-//        // Setting up layout
-//        GridPane grid = new GridPane();
-//        grid.setPadding(new Insets(10,10,10,10));
-//        grid.setVgap(8);
-//        grid.setHgap(10);
-//
-//
-//
-//        // Objects
-//        Label loginLabel = new Label("Login");
-//        GridPane.setConstraints(loginLabel, 0, 0);
-//
-//        Label usernameLabel = new Label("Username");
-//        GridPane.setConstraints(usernameLabel, 0, 1);
-//
-//        TextField usernameText = new TextField();
-//        usernameText.setPromptText("username");
-//        GridPane.setConstraints(usernameText, 1, 1);
-//
-//        Label passwordLabel = new Label("Password");
-//        GridPane.setConstraints(passwordLabel, 0, 2);
-//
-//        TextField passwordText = new TextField();
-//        passwordText.setPromptText("Password");
-//        GridPane.setConstraints(passwordText, 1, 2);
-//
-//        Button loginButton = new Button("Login");
-//        GridPane.setConstraints(loginButton, 1, 3);
-//        loginButton.setOnAction(e -> System.out.println(usernameText.getText() + " " + passwordText.getText()));
-//
-//
-//
-//        // Adding objects to layout, and layout to scene
-//        grid.getChildren().addAll(usernameLabel, passwordLabel, usernameText, passwordText, loginButton, loginLabel);
-//        Scene scene = new Scene(grid, 300, 250);
-//
-//        return scene;
-//    }
 }

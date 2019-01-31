@@ -16,12 +16,10 @@ public class Inventory {
         this.allParts = new ArrayList<>();
     }
     
-    // TEMP: probably
     public ArrayList<Part> getAllParts() {
         return allParts;
     }
     
-    // TEMP: probably
     public ArrayList<Product> getAllProducts() {
         return products;
     }
@@ -37,13 +35,11 @@ public class Inventory {
     
     // This is the required method specified in the UML diagram...
     public boolean removeProduct(int productID) {
-        // Validation
         return products.remove(lookupProduct(productID));
     }
     
     // But this method makes more sense to use... and is closer to how the deletePart method works
     public boolean deleteProduct(Product product) {
-        // Validation
         return products.remove(product);
     }
     
@@ -74,8 +70,6 @@ public class Inventory {
     }
     
     public void addPart(Part part) {
-        // TODO: If the last item was deleted, the IDs don't retain thier iteration and continue from the ID nearest to the end of the list. Small bug, I probably won't fix this.
-//        part.setPartID(allParts.size() + 1);
         int newPartID = 1;
         if (allParts.size() > 0) {
             newPartID = allParts.get(allParts.size() - 1).getPartID() + 1;
